@@ -27,6 +27,10 @@ const movieSchema = mongoose.Schema(
     description: {
       type: String,
       default: 'No description available.',
+    },
+    personalNote: {
+      type: String,
+      default: '',
     }
   }, {
     timestamps: true
