@@ -207,6 +207,14 @@
   fill: white;
 }
 
+/* Chakra UI icon styles */
+.edit-button [data-icon="true"],
+.remove-button [data-icon="true"],
+.drag-card-edit-button [data-icon="true"],
+.drag-card-delete-button [data-icon="true"] {
+  color: white;
+}
+
 .movie-poster {
   width: 100%;
   height: 300px;
