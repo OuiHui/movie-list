@@ -1,0 +1,159 @@
+.app-container {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.app-title {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.card-container {
+  position: relative;
+}
+
+.card-item {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.card-item.dragging {
+  opacity: 0.3;
+  transform: scale(0.95);
+}
+
+.drag-over-indicator {
+  height: 3px;
+  background-color: #007bff;
+  margin: 5px 0;
+  border-radius: 1px;
+  opacity: 0.8;
+}
+
+.drag-icon-wrapper {
+  cursor: grab;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.drag-icon-wrapper:hover {
+  background-color: #f0f0f0;
+}
+
+.card-content {
+  flex: 1;
+}
+
+.card-title {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.card-text {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.floating-card {
+  position: fixed;
+  width: 300px;
+  background-color: #fff;
+  border: 2px solid #007bff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.9;
+}
+
+/* Edit functionality styles */
+.edit-button, .save-button, .cancel-button {
+  margin-left: 8px;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.save-button {
+  background-color: #28a745;
+  color: #fff;
+}
+.cancel-button {
+  background-color: #dc3545;
+  color: #fff;
+}
+.edit-input {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+  padding: 4px;
+}
+
+/* Edit icon on card */
+.edit-icon-wrapper {
+  margin-right: auto;
+  padding: 4px;
+  cursor: pointer;
+}
+.edit-icon-wrapper svg {
+  width: 16px;
+  height: 16px;
+  fill: #666;
+  transition: fill 0.2s ease;
+}
+.edit-icon-wrapper:hover svg {
+  fill: #007bff;
+}
+
+/* Delete icon wrapper */
+.delete-icon-wrapper {
+  margin-left: 8px;
+  padding: 4px;
+  cursor: pointer;
+}
+.delete-icon-wrapper svg {
+  width: 16px;
+  height: 16px;
+  fill: #666;
+  transition: fill 0.2s ease;
+}
+.delete-icon-wrapper:hover svg {
+  fill: #dc3545;
+}
+
+/* Add card button */
+.add-button {
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.add-button:hover {
+  background-color: #0056b3;
+}
+
+.card-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
