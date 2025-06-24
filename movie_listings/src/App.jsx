@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Search, Plus, X, Star } from 'lucide-react';
-import DragDropCards from './components/DragDropCards';
 
 const MovieListApp = () => {
   const [movies, setMovies] = useState([
     { id: 1, title: "The Godfather", year: 1972, genre: "Crime", rating: 9.2, poster: "https://m.media-amazon.com/images/M/MV5BNGEwYjgwOGQtYjg5ZS00Njc1LTk2ZGEtM2QwZWQ2NjdhZTE5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg", description: "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son." },
     { id: 2, title: "Pulp Fiction", year: 1994, genre: "Crime", rating: 8.9, poster: "https://upload.wikimedia.org/wikipedia/en/3/3b/Pulp_Fiction_%281994%29_poster.jpg", description: "The lives of two mob hitmen, a boxer, a gangster and his wife intertwine in four tales of violence and redemption." },
-    { id: 3, title: "The Dark Knight", year: 2008, genre: "Action", rating: 9.0, poster: "https://upload.wikimedia.org/wikipedia/en/3/3b/Pulp_Fiction_%281994%29_poster.jpg", description: "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests." },
-    { id: 4, title: "Schindler's List", year: 1993, genre: "Drama", rating: 9.0, poster: "https://upload.wikimedia.org/wikipedia/en/3/3b/Pulp_Fiction_%281994%29_poster.jpg", description: "In German-occupied Poland during World War II, industrialist Oskar Schindler gradually becomes concerned for his Jewish workforce after witnessing their persecution." },
-    { id: 5, title: "Forrest Gump", year: 1994, genre: "Drama", rating: 8.8, poster: "https://upload.wikimedia.org/wikipedia/en/3/3b/Pulp_Fiction_%281994%29_poster.jpg", description: "The presidencies of Kennedy and Johnson, the Vietnam War, and other historical events unfold from the perspective of an Alabama man with an IQ of 75." }
+    { id: 3, title: "The Dark Knight", year: 2008, genre: "Action", rating: 9.0, poster: "https://musicart.xboxlive.com/7/abb02f00-0000-0000-0000-000000000002/504/image.jpg", description: "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests." },
+    { id: 4, title: "Schindler's List", year: 1993, genre: "Drama", rating: 9.0, poster: "https://m.media-amazon.com/images/M/MV5BNjM1ZDQxYWUtMzQyZS00MTE1LWJmZGYtNGUyNTdlYjM3ZmVmXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg", description: "In German-occupied Poland during World War II, industrialist Oskar Schindler gradually becomes concerned for his Jewish workforce after witnessing their persecution." },
+    { id: 5, title: "Forrest Gump", year: 1994, genre: "Drama", rating: 8.8, poster: "https://m.media-amazon.com/images/M/MV5BNDYwNzVjMTItZmU5YS00YjQ5LTljYjgtMjY2NDVmYWMyNWFmXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg", description: "The presidencies of Kennedy and Johnson, the Vietnam War, and other historical events unfold from the perspective of an Alabama man with an IQ of 75." }
   ]);
+  
+  // Create drag cards that correspond to movies
+  const [dragCards, setDragCards] = useState([]);
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
@@ -23,6 +26,99 @@ const MovieListApp = () => {
     poster: '',
     description: ''
   });
+
+  // Initialize drag cards when movies change
+  useEffect(() => {
+    const cards = movies.map((movie, index) => ({
+      id: movie.id,
+      title: `#${index + 1} - ${movie.title}`,
+      content: `${movie.year} • ${movie.genre} • ⭐${movie.rating}`
+    }));
+    setDragCards(cards);
+  }, [movies]);
+
+  // Handle reordering of drag cards and sync with movies
+  const handleDragCardReorder = (reorderedCards) => {
+    setDragCards(reorderedCards);
+    
+    // Reorder movies to match the drag cards order
+    const reorderedMovies = reorderedCards.map(card => 
+      movies.find(movie => movie.id === card.id)
+    ).filter(Boolean);
+    
+    setMovies(reorderedMovies);
+  };
+
+  // Drag and drop state
+  const [draggedCard, setDraggedCard] = useState(null);
+  const [draggedOverIndex, setDraggedOverIndex] = useState(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const containerRef = useRef(null);
+  const draggedCardRef = useRef(null);
+  const draggedOverIndexRef = useRef(null);
+
+  // Drag and drop handlers
+  const handleMouseDown = (e, card) => {
+    e.preventDefault();
+    setDraggedCard(card);
+    draggedCardRef.current = card;
+    setIsDragging(true);
+    setMousePosition({ x: e.clientX, y: e.clientY });
+
+    const handleMouseMove = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+      
+      const elements = document.elementsFromPoint(e.clientX, e.clientY);
+      const cardElement = elements.find(el => el.classList.contains('drag-card-item') && !el.classList.contains('dragging'));
+      
+      if (cardElement) {
+        const cardId = parseInt(cardElement.dataset.cardId);
+        const cardIndex = dragCards.findIndex(c => c.id === cardId);
+        
+        if (cardIndex !== -1 && cardId !== card.id) {
+          const rect = cardElement.getBoundingClientRect();
+          const midpoint = rect.top + rect.height / 2;
+          const dropIndex = e.clientY < midpoint ? cardIndex : cardIndex + 1;
+          setDraggedOverIndex(dropIndex);
+          draggedOverIndexRef.current = dropIndex;
+        }
+      } else {
+        const container = containerRef.current;
+        if (container) {
+          const containerRect = container.getBoundingClientRect();
+          if (e.clientY > containerRect.bottom - 50) {
+            setDraggedOverIndex(dragCards.length);
+          }
+        }
+      }
+    };
+
+    const handleMouseUp = () => {
+      const overIndex = draggedOverIndexRef.current;
+      const cardRef = draggedCardRef.current;
+      if (overIndex !== null && cardRef) {
+        const currentIndex = dragCards.findIndex(c => c.id === cardRef.id);
+        if (currentIndex !== -1 && overIndex !== currentIndex) {
+          const updated = Array.from(dragCards);
+          const [moved] = updated.splice(currentIndex, 1);
+          const adjustedIndex = overIndex > currentIndex ? overIndex - 1 : overIndex;
+          updated.splice(adjustedIndex, 0, moved);
+          handleDragCardReorder(updated);
+        }
+      }
+      draggedCardRef.current = null;
+      draggedOverIndexRef.current = null;
+      setDraggedCard(null);
+      setDraggedOverIndex(null);
+      setIsDragging(false);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  };
 
   useEffect(() => {
     const filtered = movies.filter(movie =>
@@ -84,44 +180,103 @@ const MovieListApp = () => {
         </div>
       </header>
 
-      <div style={styles.movieGrid}>
-        {filteredMovies.map((movie, index) => (
-          <div key={movie.id} style={styles.movieCard} onClick={() => openMovieDetail(movie)}>
-            <div style={styles.movieRank}>#{index + 1}</div>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                removeMovie(movie.id);
-              }}
-              style={styles.removeButton}
-            >
-              <X size={16} />
-            </button>
-            <img
-              src={movie.poster}
-              alt={movie.title}
-              style={styles.moviePoster}
-              onError={(e) => {
-                e.target.src = `https://via.placeholder.com/200x300/333/fff?text=${encodeURIComponent(movie.title)}`;
-              }}
-            />
-            <div style={styles.movieInfo}>
-              <h3 style={styles.movieTitle}>{movie.title}</h3>
-              <p style={styles.movieYear}>{movie.year}</p>
-              <p style={styles.movieGenre}>{movie.genre}</p>
-              <div style={styles.movieRating}>
-                <Star size={16} fill="#ffd700" color="#ffd700" />
-                <span>{movie.rating}</span>
+      {/* Main Content - Side by Side Layout */}
+      <div style={styles.mainContent}>
+        {/* Left Side - Movie Cards */}
+        <div style={styles.leftPanel}>
+          <h2 style={styles.panelTitle}>Movie Collection</h2>
+          <div style={styles.movieGrid}>
+            {filteredMovies.map((movie, index) => (
+              <div key={movie.id} style={styles.movieCard} onClick={() => openMovieDetail(movie)}>
+                <div style={styles.movieRank}>#{index + 1}</div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeMovie(movie.id);
+                  }}
+                  style={styles.removeButton}
+                >
+                  <X size={16} />
+                </button>
+                <img
+                  src={movie.poster}
+                  alt={movie.title}
+                  style={styles.moviePoster}
+                  onError={(e) => {
+                    e.target.src = `https://via.placeholder.com/200x300/333/fff?text=${encodeURIComponent(movie.title)}`;
+                  }}
+                />
+                <div style={styles.movieInfo}>
+                  <h3 style={styles.movieTitle}>{movie.title}</h3>
+                  <p style={styles.movieYear}>{movie.year}</p>
+                  <p style={styles.movieGenre}>{movie.genre}</p>
+                  <div style={styles.movieRating}>
+                    <Star size={16} fill="#ffd700" color="#ffd700" />
+                    <span>{movie.rating}</span>
+                  </div>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
-        ))}
+        </div>
+
+        {/* Right Side - Drag and Drop Cards */}
+        <div style={styles.rightPanel}>
+          <h2 style={styles.panelTitle}>Ranking Control</h2>
+          <p style={styles.panelSubtitle}>Drag to reorder your movie rankings</p>
+          
+          <div ref={containerRef} style={styles.dragCardContainer}>
+            {dragCards.map((card, index) => (
+              <React.Fragment key={card.id}>
+                {draggedOverIndex === index && draggedCard && <div style={styles.dragOverIndicator} />}
+                
+                <div
+                  className={`drag-card-item${draggedCard && draggedCard.id === card.id ? ' dragging' : ''}`}
+                  data-card-id={card.id}
+                  style={{
+                    ...styles.dragCardItem,
+                    ...(draggedCard && draggedCard.id === card.id ? styles.dragCardItemDragging : {})
+                  }}
+                >
+                  <div style={styles.dragCardLeft}>
+                    <div 
+                      onMouseDown={(e) => handleMouseDown(e, card)} 
+                      style={styles.dragIconWrapper}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <circle cx="4" cy="4" r="1" fill="#888"/>
+                        <circle cx="12" cy="4" r="1" fill="#888"/>
+                        <circle cx="4" cy="8" r="1" fill="#888"/>
+                        <circle cx="12" cy="8" r="1" fill="#888"/>
+                        <circle cx="4" cy="12" r="1" fill="#888"/>
+                        <circle cx="12" cy="12" r="1" fill="#888"/>
+                      </svg>
+                    </div>
+                    <div style={styles.dragCardContent}>
+                      <h3 style={styles.dragCardTitle}>{card.title}</h3>
+                      <p style={styles.dragCardText}>{card.content}</p>
+                    </div>
+                  </div>
+                </div>
+              </React.Fragment>
+            ))}
+            
+            {draggedOverIndex === dragCards.length && draggedCard && <div style={styles.dragOverIndicator} />}
+          </div>
+        </div>
       </div>
 
-      {/* Drag and Drop Cards Section */}
-      <div style={styles.dragDropSection}>
-        <DragDropCards />
-      </div>
+      {/* Floating dragged card */}
+      {isDragging && draggedCard && (
+        <div style={{
+          ...styles.floatingCard,
+          left: mousePosition.x - 150,
+          top: mousePosition.y - 30
+        }}>
+          <h3 style={styles.floatingCardTitle}>{draggedCard.title}</h3>
+          <p style={styles.floatingCardText}>{draggedCard.content}</p>
+        </div>
+      )}
 
       {isModalOpen && (
         <div style={styles.modalOverlay} onClick={() => setIsModalOpen(false)}>
@@ -336,11 +491,39 @@ const styles = {
       transform: 'translateY(-2px)'
     }
   },
+  mainContent: {
+    display: 'flex',
+    minHeight: 'calc(100vh - 120px)',
+    gap: '2rem',
+    padding: '2rem'
+  },
+  leftPanel: {
+    flex: '1',
+    minWidth: '0'
+  },
+  rightPanel: {
+    width: '400px',
+    backgroundColor: '#1a1a1a',
+    borderRadius: '16px',
+    padding: '1.5rem',
+    border: '1px solid #333'
+  },
+  panelTitle: {
+    fontSize: '1.5rem',
+    fontWeight: 'bold',
+    color: '#4ecdc4',
+    margin: '0 0 1rem 0'
+  },
+  panelSubtitle: {
+    fontSize: '0.9rem',
+    color: '#888',
+    margin: '0 0 1.5rem 0'
+  },
   movieGrid: {
-    padding: '2rem',
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-    gap: '2rem'
+    gap: '1.5rem',
+    marginTop: '1rem'
   },
   movieCard: {
     position: 'relative',
@@ -417,6 +600,84 @@ const styles = {
     borderTop: '1px solid #333',
     paddingTop: '2rem',
     marginTop: '2rem'
+  },
+  dragCardContainer: {
+    position: 'relative'
+  },
+  dragCardItem: {
+    backgroundColor: '#0f0f0f',
+    border: '1px solid #333',
+    borderRadius: '8px',
+    padding: '12px',
+    marginBottom: '8px',
+    display: 'flex',
+    alignItems: 'center',
+    transition: 'all 0.2s ease',
+    cursor: 'default'
+  },
+  dragCardItemDragging: {
+    opacity: 0.3,
+    transform: 'scale(0.95)'
+  },
+  dragOverIndicator: {
+    height: '3px',
+    backgroundColor: '#4ecdc4',
+    margin: '4px 0',
+    borderRadius: '1px',
+    opacity: 0.8
+  },
+  dragCardLeft: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    flex: 1
+  },
+  dragIconWrapper: {
+    cursor: 'grab',
+    padding: '4px',
+    borderRadius: '4px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'background-color 0.2s ease'
+  },
+  dragCardContent: {
+    flex: 1
+  },
+  dragCardTitle: {
+    margin: '0 0 4px 0',
+    fontSize: '14px',
+    color: '#ffffff',
+    fontWeight: 'bold'
+  },
+  dragCardText: {
+    margin: 0,
+    fontSize: '12px',
+    color: '#ccc'
+  },
+  floatingCard: {
+    position: 'fixed',
+    width: '300px',
+    backgroundColor: '#1a1a1a',
+    border: '2px solid #4ecdc4',
+    borderRadius: '8px',
+    padding: '12px',
+    boxShadow: '0 8px 16px rgba(0,0,0,0.4)',
+    pointerEvents: 'none',
+    zIndex: 1000,
+    opacity: 0.9,
+    color: '#ffffff'
+  },
+  floatingCardTitle: {
+    margin: '0 0 4px 0',
+    fontSize: '14px',
+    color: '#ffffff',
+    fontWeight: 'bold'
+  },
+  floatingCardText: {
+    margin: 0,
+    fontSize: '12px',
+    color: '#ccc'
   },
   modalOverlay: {
     position: 'fixed',
