@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Plus, X, Star } from 'lucide-react';
+import DragDropCards from './components/DragDropCards';
 
 const MovieListApp = () => {
   const [movies, setMovies] = useState([
@@ -115,6 +116,11 @@ const MovieListApp = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Drag and Drop Cards Section */}
+      <div style={styles.dragDropSection}>
+        <DragDropCards />
       </div>
 
       {isModalOpen && (
@@ -406,6 +412,11 @@ const styles = {
     alignItems: 'center',
     gap: '4px',
     fontSize: '0.9rem'
+  },
+  dragDropSection: {
+    borderTop: '1px solid #333',
+    paddingTop: '2rem',
+    marginTop: '2rem'
   },
   modalOverlay: {
     position: 'fixed',

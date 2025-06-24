@@ -2,11 +2,15 @@
   padding: 20px;
   max-width: 600px;
   margin: 0 auto;
+  background-color: #0f0f0f;
+  color: #ffffff;
 }
 
 .app-title {
   margin-bottom: 20px;
-  color: #333;
+  color: #4ecdc4;
+  font-size: 2rem;
+  font-weight: bold;
 }
 
 .card-container {
@@ -14,12 +18,12 @@
 }
 
 .card-item {
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 12px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
   display: flex;
   align-items: center;
   transition: all 0.2s ease;
@@ -32,7 +36,7 @@
 
 .drag-over-indicator {
   height: 3px;
-  background-color: #007bff;
+  background-color: #4ecdc4;
   margin: 5px 0;
   border-radius: 1px;
   opacity: 0.8;
@@ -49,7 +53,7 @@
 }
 
 .drag-icon-wrapper:hover {
-  background-color: #f0f0f0;
+  background-color: #333;
 }
 
 .card-content {
@@ -59,26 +63,27 @@
 .card-title {
   margin: 0 0 8px 0;
   font-size: 16px;
-  color: #333;
+  color: #ffffff;
 }
 
 .card-text {
   margin: 0;
   font-size: 14px;
-  color: #666;
+  color: #ccc;
 }
 
 .floating-card {
   position: fixed;
   width: 300px;
-  background-color: #fff;
-  border: 2px solid #007bff;
+  background-color: #1a1a1a;
+  border: 2px solid #4ecdc4;
   border-radius: 8px;
   padding: 16px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.4);
   pointer-events: none;
   z-index: 1000;
   opacity: 0.9;
+  color: #ffffff;
 }
 
 /* Edit functionality styles */
@@ -90,18 +95,28 @@
   cursor: pointer;
 }
 .save-button {
-  background-color: #28a745;
-  color: #fff;
+  background-color: #4ecdc4;
+  color: #000;
+  font-weight: bold;
 }
 .cancel-button {
-  background-color: #dc3545;
+  background-color: #ff6b6b;
   color: #fff;
 }
 .edit-input {
   width: 100%;
   box-sizing: border-box;
   margin-bottom: 8px;
-  padding: 4px;
+  padding: 8px;
+  background-color: #0f0f0f;
+  border: 2px solid #333;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 14px;
+}
+.edit-input:focus {
+  border-color: #4ecdc4;
+  outline: none;
 }
 
 /* Edit icon on card */
@@ -113,11 +128,11 @@
 .edit-icon-wrapper svg {
   width: 16px;
   height: 16px;
-  fill: #666;
+  fill: #888;
   transition: fill 0.2s ease;
 }
 .edit-icon-wrapper:hover svg {
-  fill: #007bff;
+  fill: #4ecdc4;
 }
 
 /* Delete icon wrapper */
@@ -129,26 +144,29 @@
 .delete-icon-wrapper svg {
   width: 16px;
   height: 16px;
-  fill: #666;
+  fill: #888;
   transition: fill 0.2s ease;
 }
 .delete-icon-wrapper:hover svg {
-  fill: #dc3545;
+  fill: #ff6b6b;
 }
 
 /* Add card button */
 .add-button {
   margin-bottom: 16px;
-  padding: 8px 12px;
-  background-color: #007bff;
-  color: #fff;
+  padding: 12px 20px;
+  background-color: #4ecdc4;
+  color: #000;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.2s;
 }
 .add-button:hover {
-  background-color: #0056b3;
+  background-color: #45b7b8;
+  transform: translateY(-2px);
 }
 
 .card-left {

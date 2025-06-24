@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import './App.css'; // Import the CSS file
+import './DragDropCards.css'; // Import the CSS file
 
 const DragDropCards = () => {
   const initialCards = [
