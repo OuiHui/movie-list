@@ -1,57 +1,66 @@
 import { useState, useEffect } from 'react';
 
-export const useMovies = () => {
-  const [movies, setMovies] = useState([
-    { 
-      id: 1, 
-      title: "The Godfather", 
-      year: 1972, 
-      genre: "Crime", 
-      rating: 9.2, 
-      poster: "https://m.media-amazon.com/images/M/MV5BNGEwYjgwOGQtYjg5ZS00Njc1LTk2ZGEtM2QwZWQ2NjdhZTE5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg", 
-      description: "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son." 
-    },
-    { 
-      id: 2, 
-      title: "Pulp Fiction", 
-      year: 1994, 
-      genre: "Crime", 
-      rating: 8.9, 
-      poster: "https://upload.wikimedia.org/wikipedia/en/3/3b/Pulp_Fiction_%281994%29_poster.jpg", 
-      description: "The lives of two mob hitmen, a boxer, a gangster and his wife intertwine in four tales of violence and redemption." 
-    },
-    { 
-      id: 3, 
-      title: "The Dark Knight", 
-      year: 2008, 
-      genre: "Action", 
-      rating: 9.0, 
-      poster: "https://musicart.xboxlive.com/7/abb02f00-0000-0000-0000-000000000002/504/image.jpg", 
-      description: "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests." 
-    },
-    { 
-      id: 4, 
-      title: "Schindler's List", 
-      year: 1993, 
-      genre: "Drama", 
-      rating: 9.0, 
-      poster: "https://m.media-amazon.com/images/M/MV5BNjM1ZDQxYWUtMzQyZS00MTE1LWJmZGYtNGUyNTdlYjM3ZmVmXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg", 
-      description: "In German-occupied Poland during World War II, industrialist Oskar Schindler gradually becomes concerned for his Jewish workforce after witnessing their persecution." 
-    },
-    { 
-      id: 5, 
-      title: "Forrest Gump", 
-      year: 1994, 
-      genre: "Drama", 
-      rating: 8.8, 
-      poster: "https://m.media-amazon.com/images/M/MV5BNDYwNzVjMTItZmU5YS00YjQ5LTljYjgtMjY2NDVmYWMyNWFmXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg", 
-      description: "The presidencies of Kennedy and Johnson, the Vietnam War, and other historical events unfold from the perspective of an Alabama man with an IQ of 75." 
-    }
-  ]);
+const API_BASE_URL = 'http://localhost:5000/api/movies';
 
+export const useMovies = () => {
+  const [movies, setMovies] = useState([]);
   const [dragCards, setDragCards] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredMovies, setFilteredMovies] = useState(movies);
+  const [filteredMovies, setFilteredMovies] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Fetch movies from database on component mount
+  useEffect(() => {
+    fetchMovies();
+  }, []);
+
+  // Fetch movies from the backend
+  const fetchMovies = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(API_BASE_URL);
+      const data = await response.json();
+      
+      if (data.success) {
+        // Convert MongoDB _id to id for frontend compatibility
+        const moviesWithId = data.data.map(movie => ({
+          ...movie,
+          id: movie._id
+        }));
+        setMovies(moviesWithId);
+      } else {
+        throw new Error(data.message || 'Failed to fetch movies');
+      }
+    } catch (err) {
+      setError(err.message);
+      console.error('Error fetching movies:', err);
+      // Fallback to local data if API fails
+      setMovies([
+        { 
+          id: 1, 
+          title: "The Godfather", 
+          year: 1972, 
+          genre: "Crime", 
+          rating: 9.2, 
+          poster: "https://m.media-amazon.com/images/M/MV5BNGEwYjgwOGQtYjg5ZS00Njc1LTk2ZGEtM2QwZWQ2NjdhZTE5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg", 
+          description: "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son." 
+        },
+        { 
+          id: 2, 
+          title: "Pulp Fiction", 
+          year: 1994, 
+          genre: "Crime", 
+          rating: 8.9, 
+          poster: "https://upload.wikimedia.org/wikipedia/en/3/3b/Pulp_Fiction_%281994%29_poster.jpg", 
+          description: "The lives of two mob hitmen, a boxer, a gangster and his wife intertwine in four tales of violence and redemption." 
+        }
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Initialize drag cards when movies change
   useEffect(() => {
@@ -73,44 +82,116 @@ export const useMovies = () => {
     setFilteredMovies(filtered);
   }, [movies, searchTerm]);
 
-  const addMovie = (movieData) => {
+  const addMovie = async (movieData) => {
     // Validate required fields including poster
-    if (!movieData.title || !movieData.year || !movieData.poster) {
-      throw new Error('Title, year, and poster are required fields');
+    if (!movieData.title || !movieData.poster) {
+      throw new Error('Title and poster are required fields');
     }
 
-    const movie = {
-      id: Date.now(),
-      title: movieData.title,
-      year: parseInt(movieData.year),
-      genre: movieData.genre || 'Unknown',
-      rating: parseFloat(movieData.rating) || 0,
-      poster: movieData.poster,
-      description: movieData.description || 'No description available.'
-    };
-    setMovies([...movies, movie]);
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch(API_BASE_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: movieData.title,
+          year: parseInt(movieData.year),
+          genre: movieData.genre || 'Unknown',
+          rating: parseFloat(movieData.rating) || 0,
+          poster: movieData.poster,
+          description: movieData.description || 'No description available.'
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        // Add id field for frontend compatibility
+        const newMovie = { ...data.data, id: data.data._id };
+        setMovies(prevMovies => [...prevMovies, newMovie]);
+      } else {
+        throw new Error(data.message || 'Failed to add movie');
+      }
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const updateMovie = (id, movieData) => {
+  const updateMovie = async (id, movieData) => {
     // Validate required fields including poster
-    if (!movieData.title || !movieData.year || !movieData.poster) {
-      throw new Error('Title, year, and poster are required fields');
+    if (!movieData.title || !movieData.poster) {
+      throw new Error('Title and poster are required fields');
     }
 
-    const updatedMovie = {
-      id,
-      title: movieData.title,
-      year: parseInt(movieData.year),
-      genre: movieData.genre || 'Unknown',
-      rating: parseFloat(movieData.rating) || 0,
-      poster: movieData.poster,
-      description: movieData.description || 'No description available.'
-    };
-    setMovies(movies.map(movie => movie.id === id ? updatedMovie : movie));
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: movieData.title,
+          year: parseInt(movieData.year),
+          genre: movieData.genre || 'Unknown',
+          rating: parseFloat(movieData.rating) || 0,
+          poster: movieData.poster,
+          description: movieData.description || 'No description available.'
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        // Update movie in local state
+        const updatedMovie = { ...data.data, id: data.data._id };
+        setMovies(prevMovies => 
+          prevMovies.map(movie => movie.id === id ? updatedMovie : movie)
+        );
+      } else {
+        throw new Error(data.message || 'Failed to update movie');
+      }
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const removeMovie = (id) => {
-    setMovies(movies.filter(movie => movie.id !== id));
+  const removeMovie = async (id) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/${id}`, {
+        method: 'DELETE',
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        // Remove movie from local state
+        setMovies(prevMovies => prevMovies.filter(movie => movie.id !== id));
+      } else {
+        throw new Error(data.message || 'Failed to delete movie');
+      }
+    } catch (err) {
+      setError(err.message);
+      console.error('Error deleting movie:', err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDragCardReorder = (reorderedCards) => {
@@ -129,10 +210,13 @@ export const useMovies = () => {
     dragCards,
     searchTerm,
     filteredMovies,
+    loading,
+    error,
     setSearchTerm,
     addMovie,
     updateMovie,
     removeMovie,
-    handleDragCardReorder
+    handleDragCardReorder,
+    refetchMovies: fetchMovies
   };
 };

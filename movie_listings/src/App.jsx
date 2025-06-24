@@ -15,11 +15,14 @@ const MovieListApp = () => {
     dragCards,
     searchTerm,
     filteredMovies,
+    loading,
+    error,
     setSearchTerm,
     addMovie,
     updateMovie,
     removeMovie,
-    handleDragCardReorder
+    handleDragCardReorder,
+    refetchMovies
   } = useMovies();
 
   const {
@@ -62,17 +65,17 @@ const MovieListApp = () => {
     setIsModalOpen(true);
   };
 
-  const handleSaveNewMovie = () => {
-    if (newMovie.title && newMovie.year && newMovie.poster) {
+  const handleSaveNewMovie = async () => {
+    if (newMovie.title && newMovie.poster) {
       try {
-        addMovie(newMovie);
+        await addMovie(newMovie);
         setNewMovie({ title: '', year: '', genre: '', rating: '', poster: '', description: '' });
         setIsModalOpen(false);
       } catch (error) {
-        alert(error.message);
+        alert(`Error adding movie: ${error.message}`);
       }
     } else {
-      alert('Please provide title, year, and poster URL');
+      alert('Please provide title and poster URL');
     }
   };
 
@@ -95,10 +98,10 @@ const MovieListApp = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleSaveEditMovie = () => {
-    if (editMovie.title && editMovie.year && editMovie.poster) {
+  const handleSaveEditMovie = async () => {
+    if (editMovie.title && editMovie.poster) {
       try {
-        updateMovie(editingMovie.id, editMovie);
+        await updateMovie(editingMovie.id, editMovie);
         setIsEditModalOpen(false);
         setEditingMovie(null);
         setEditMovie({
@@ -111,10 +114,20 @@ const MovieListApp = () => {
           description: ''
         });
       } catch (error) {
-        alert(error.message);
+        alert(`Error updating movie: ${error.message}`);
       }
     } else {
-      alert('Please provide title, year, and poster URL');
+      alert('Please provide title and poster URL');
+    }
+  };
+
+  const handleDeleteMovie = async (id) => {
+    if (window.confirm('Are you sure you want to delete this movie?')) {
+      try {
+        await removeMovie(id);
+      } catch (error) {
+        alert(`Error deleting movie: ${error.message}`);
+      }
     }
   };
 
@@ -130,7 +143,7 @@ const MovieListApp = () => {
         <MovieGrid
           movies={filteredMovies}
           onEdit={handleEditMovie}
-          onDelete={removeMovie}
+          onDelete={handleDeleteMovie}
           onMovieClick={handleMovieClick}
         />
 
@@ -141,7 +154,7 @@ const MovieListApp = () => {
           draggedCard={draggedCard}
           draggedOverIndex={draggedOverIndex}
           onEdit={handleEditMovie}
-          onDelete={removeMovie}
+          onDelete={handleDeleteMovie}
           onMouseDown={handleMouseDown}
         />
       </div>

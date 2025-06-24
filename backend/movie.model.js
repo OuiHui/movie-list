@@ -8,7 +8,7 @@ const movieSchema = mongoose.Schema(
     },
     year: {
       type: Number,
-      required: true,
+      default: 0,
     },
     genre: {
       type: String,

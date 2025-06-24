@@ -25,7 +25,7 @@ const MovieModal = ({ isOpen, movie, onClose, onSave, onChange, title, isEdit = 
             />
           </div>
           <div className="form-group">
-            <label className="label">Year *</label>
+            <label className="label">Year</label>
             <input
               type="number"
               value={movie.year}
@@ -85,7 +85,7 @@ const MovieModal = ({ isOpen, movie, onClose, onSave, onChange, title, isEdit = 
           <button
             onClick={onSave}
             className="save-button"
-            disabled={!movie.title || !movie.year || !movie.poster}
+            disabled={!movie.title || !movie.poster}
           >
             {isEdit ? 'Save Changes' : 'Add Movie'}
           </button>

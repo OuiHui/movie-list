@@ -14,8 +14,8 @@ export const getMovie = async (req, res) => {
 export const createMovie = async (req, res) => {
     const movie = req.body;
 
-    if (!movie.title || !movie.poster || movie.year === undefined) {
-        return res.status(400).json({ success:false, message:"Please provide title, poster, and year"});
+    if (!movie.title || !movie.poster) {
+        return res.status(400).json({ success:false, message:"Please provide title and poster"});
     }
 
     const newMovie = new Movie(movie);
