@@ -1,5 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Plus, X, Star } from 'lucide-react';
+import { Search, Plus, X, Star, Trash2 } from 'lucide-react';
+
+const DeleteIcon = () => (
+  <svg viewBox="0 0 24 24" fill="white">
+    <path d="M3 6h18v2H3V6zm2 3h14v12H5V9zm3 3v6h2v-6H8zm4 0v6h2v-6h-2z" />
+  </svg>
+);
+
+const EditIcon = () => (
+  <svg viewBox="0 0 24 24" fill="white">
+    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+  </svg>
+);
 
 const MovieListApp = () => {
   const [movies, setMovies] = useState([
@@ -16,9 +28,20 @@ const MovieListApp = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [editingMovie, setEditingMovie] = useState(null);
   const [filteredMovies, setFilteredMovies] = useState(movies);
   const [newMovie, setNewMovie] = useState({
+    title: '',
+    year: '',
+    genre: '',
+    rating: '',
+    poster: '',
+    description: ''
+  });
+  const [editMovie, setEditMovie] = useState({
+    id: null,
     title: '',
     year: '',
     genre: '',
@@ -155,6 +178,46 @@ const MovieListApp = () => {
     setMovies(movies.filter(movie => movie.id !== id));
   };
 
+  const openEditModal = (movie) => {
+    setEditingMovie(movie);
+    setEditMovie({
+      id: movie.id,
+      title: movie.title,
+      year: movie.year.toString(),
+      genre: movie.genre,
+      rating: movie.rating.toString(),
+      poster: movie.poster,
+      description: movie.description
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const updateMovie = () => {
+    if (editMovie.title && editMovie.year) {
+      const updatedMovie = {
+        ...editingMovie,
+        title: editMovie.title,
+        year: parseInt(editMovie.year),
+        genre: editMovie.genre || 'Unknown',
+        rating: parseFloat(editMovie.rating) || 0,
+        poster: editMovie.poster || `https://via.placeholder.com/200x300/333/fff?text=${encodeURIComponent(editMovie.title)}`,
+        description: editMovie.description || 'No description available.'
+      };
+      setMovies(movies.map(movie => movie.id === editingMovie.id ? updatedMovie : movie));
+      setIsEditModalOpen(false);
+      setEditingMovie(null);
+      setEditMovie({
+        id: null,
+        title: '',
+        year: '',
+        genre: '',
+        rating: '',
+        poster: '',
+        description: ''
+      });
+    }
+  };
+
   return (
     <div style={styles.container}>
       <header style={styles.header}>
@@ -195,8 +258,9 @@ const MovieListApp = () => {
                     removeMovie(movie.id);
                   }}
                   style={styles.removeButton}
+                  title="Delete movie"
                 >
-                  <X size={16} />
+                  <DeleteIcon />
                 </button>
                 <img
                   src={movie.poster}
@@ -215,6 +279,16 @@ const MovieListApp = () => {
                     <span>{movie.rating}</span>
                   </div>
                 </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openEditModal(movie);
+                  }}
+                  style={styles.editButton}
+                  title="Edit movie"
+                >
+                  <EditIcon />
+                </button>
               </div>
             ))}
           </div>
@@ -241,6 +315,7 @@ const MovieListApp = () => {
                   <div style={styles.dragCardLeft}>
                     <div 
                       onMouseDown={(e) => handleMouseDown(e, card)} 
+                      className="drag-icon-wrapper"
                       style={styles.dragIconWrapper}
                     >
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -257,6 +332,17 @@ const MovieListApp = () => {
                       <p style={styles.dragCardText}>{card.content}</p>
                     </div>
                   </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeMovie(card.id);
+                    }}
+                    className="drag-card-delete-button"
+                    style={styles.dragCardDeleteButton}
+                    title="Delete movie"
+                  >
+                    <DeleteIcon />
+                  </button>
                 </div>
               </React.Fragment>
             ))}
@@ -417,6 +503,101 @@ const MovieListApp = () => {
           </div>
         </div>
       )}
+
+      {isEditModalOpen && editingMovie && (
+        <div style={styles.modalOverlay} onClick={() => setIsEditModalOpen(false)}>
+          <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div style={styles.modalHeader}>
+              <h2 style={styles.modalTitle}>Edit Movie</h2>
+              <button
+                onClick={() => setIsEditModalOpen(false)}
+                style={styles.modalCloseButton}
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <div style={styles.modalBody}>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Title *</label>
+                <input
+                  type="text"
+                  value={editMovie.title}
+                  onChange={(e) => setEditMovie({...editMovie, title: e.target.value})}
+                  style={styles.input}
+                  placeholder="Enter movie title"
+                />
+              </div>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Year *</label>
+                <input
+                  type="number"
+                  value={editMovie.year}
+                  onChange={(e) => setEditMovie({...editMovie, year: e.target.value})}
+                  style={styles.input}
+                  placeholder="Enter release year"
+                />
+              </div>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Genre</label>
+                <input
+                  type="text"
+                  value={editMovie.genre}
+                  onChange={(e) => setEditMovie({...editMovie, genre: e.target.value})}
+                  style={styles.input}
+                  placeholder="Enter genre"
+                />
+              </div>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Rating</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  max="10"
+                  value={editMovie.rating}
+                  onChange={(e) => setEditMovie({...editMovie, rating: e.target.value})}
+                  style={styles.input}
+                  placeholder="Enter rating (0-10)"
+                />
+              </div>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Poster URL</label>
+                <input
+                  type="url"
+                  value={editMovie.poster}
+                  onChange={(e) => setEditMovie({...editMovie, poster: e.target.value})}
+                  style={styles.input}
+                  placeholder="Enter poster image URL"
+                />
+              </div>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Description</label>
+                <textarea
+                  value={editMovie.description}
+                  onChange={(e) => setEditMovie({...editMovie, description: e.target.value})}
+                  style={{...styles.input, height: '80px', resize: 'vertical'}}
+                  placeholder="Enter movie description"
+                />
+              </div>
+            </div>
+            <div style={styles.modalFooter}>
+              <button
+                onClick={() => setIsEditModalOpen(false)}
+                style={styles.cancelButton}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={updateMovie}
+                style={styles.saveButton}
+                disabled={!editMovie.title || !editMovie.year}
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -551,20 +732,39 @@ const styles = {
   },
   removeButton: {
     position: 'absolute',
-    top: '8px',
+    bottom: '8px',
     right: '8px',
     backgroundColor: 'rgba(255, 107, 107, 0.9)',
     color: '#fff',
     border: 'none',
-    borderRadius: '50%',
-    width: '24px',
-    height: '24px',
+    borderRadius: '6px',
+    width: '28px',
+    height: '28px',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 2,
-    transition: 'background-color 0.2s'
+    transition: 'all 0.2s',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+  },
+  editButton: {
+    position: 'absolute',
+    bottom: '8px',
+    right: '44px',
+    backgroundColor: 'rgba(78, 205, 196, 0.9)',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '6px',
+    width: '28px',
+    height: '28px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 2,
+    transition: 'all 0.2s',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
   },
   moviePoster: {
     width: '100%',
@@ -577,7 +777,7 @@ const styles = {
   movieTitle: {
     fontSize: '1.1rem',
     fontWeight: 'bold',
-    margin: '0 0 0.5rem 0',
+    margin: 0,
     lineHeight: '1.3'
   },
   movieYear: {
@@ -654,6 +854,22 @@ const styles = {
     margin: 0,
     fontSize: '12px',
     color: '#ccc'
+  },
+  dragCardDeleteButton: {
+    backgroundColor: 'rgba(255, 107, 107, 0.9)',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '4px',
+    width: '22px',
+    height: '22px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'all 0.2s',
+    marginLeft: '8px',
+    flexShrink: 0,
+    boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
   },
   floatingCard: {
     position: 'fixed',
@@ -884,6 +1100,18 @@ styleSheet.textContent = `
   }
   .remove-button:hover {
     background-color: rgba(255, 107, 107, 1) !important;
+    transform: scale(1.1);
+  }
+  .drag-card-delete-button:hover {
+    background-color: rgba(255, 107, 107, 1) !important;
+    transform: scale(1.2);
+  }
+  .drag-icon-wrapper:hover {
+    background-color: #333 !important;
+  }
+  .drag-card-item:hover {
+    border-color: #4ecdc4 !important;
+    background-color: #1a1a1a !important;
   }
 `;
 document.head.appendChild(styleSheet);

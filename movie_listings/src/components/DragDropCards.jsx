@@ -178,7 +178,7 @@ const DragDropCards = () => {
                   <div className="edit-icon-wrapper" onClick={() => handleEditClick(card)}>
                     <EditIcon />
                   </div>
-                  <div className="delete-icon-wrapper" onClick={() => handleDelete(card.id)}>
+                  <div className="delete-icon-wrapper" onClick={() => handleDelete(card.id)} style={{ backgroundColor: '#f28b82', padding: '4px', borderRadius: '4px' }}>
                     <DeleteIcon />
                   </div>
                 </>

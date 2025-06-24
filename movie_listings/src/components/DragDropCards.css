@@ -151,6 +151,18 @@
   fill: #ff6b6b;
 }
 
+/* Override icon colors for visibility */
+.delete-icon-wrapper svg,
+.edit-icon-wrapper svg {
+  fill: #ffffff !important;
+}
+.delete-icon-wrapper:hover svg {
+  fill: #ff4444 !important;
+}
+.edit-icon-wrapper:hover svg {
+  fill: #4ecdc4 !important;
+}
+
 /* Add card button */
 .add-button {
   margin-bottom: 16px;
