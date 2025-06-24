@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Plus, X, Star, Trash2 } from 'lucide-react';
+import './App.css';
 
 const DeleteIcon = () => (
-  <svg viewBox="0 0 24 24" fill="white">
+  <svg viewBox="0 0 24 24" width="14" height="14" fill="white">
     <path d="M3 6h18v2H3V6zm2 3h14v12H5V9zm3 3v6h2v-6H8zm4 0v6h2v-6h-2z" />
   </svg>
 );
 
 const EditIcon = () => (
-  <svg viewBox="0 0 24 24" fill="white">
+  <svg viewBox="0 0 24 24" width="14" height="14" fill="white">
     <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
   </svg>
 );
@@ -219,23 +220,23 @@ const MovieListApp = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <header style={styles.header}>
-        <h1 style={styles.title}>Top 100 Movies</h1>
-        <div style={styles.headerControls}>
-          <div style={styles.searchContainer}>
-            <Search size={20} style={styles.searchIcon} />
+    <div className="container">
+      <header className="header">
+        <h1 className="title">Top 100 Movies</h1>
+        <div className="header-controls">
+          <div className="search-container">
+            <Search size={20} className="search-icon" />
             <input
               type="text"
               placeholder="Search movies..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              style={styles.searchInput}
+              className="search-input"
             />
           </div>
           <button
             onClick={() => setIsModalOpen(true)}
-            style={styles.addButton}
+            className="add-button"
           >
             <Plus size={20} />
             Add Movie
@@ -244,20 +245,20 @@ const MovieListApp = () => {
       </header>
 
       {/* Main Content - Side by Side Layout */}
-      <div style={styles.mainContent}>
+      <div className="main-content">
         {/* Left Side - Movie Cards */}
-        <div style={styles.leftPanel}>
-          <h2 style={styles.panelTitle}>Movie Collection</h2>
-          <div style={styles.movieGrid}>
+        <div className="left-panel">
+          <h2 className="panel-title">Movie Collection</h2>
+          <div className="movie-grid">
             {filteredMovies.map((movie, index) => (
-              <div key={movie.id} style={styles.movieCard} onClick={() => openMovieDetail(movie)}>
-                <div style={styles.movieRank}>#{index + 1}</div>
+              <div key={movie.id} className="movie-card" onClick={() => openMovieDetail(movie)}>
+                <div className="movie-rank">#{index + 1}</div>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     removeMovie(movie.id);
                   }}
-                  style={styles.removeButton}
+                  className="remove-button"
                   title="Delete movie"
                 >
                   <DeleteIcon />
@@ -265,16 +266,16 @@ const MovieListApp = () => {
                 <img
                   src={movie.poster}
                   alt={movie.title}
-                  style={styles.moviePoster}
+                  className="movie-poster"
                   onError={(e) => {
                     e.target.src = `https://via.placeholder.com/200x300/333/fff?text=${encodeURIComponent(movie.title)}`;
                   }}
                 />
-                <div style={styles.movieInfo}>
-                  <h3 style={styles.movieTitle}>{movie.title}</h3>
-                  <p style={styles.movieYear}>{movie.year}</p>
-                  <p style={styles.movieGenre}>{movie.genre}</p>
-                  <div style={styles.movieRating}>
+                <div className="movie-info">
+                  <h3 className="movie-title">{movie.title}</h3>
+                  <p className="movie-year">{movie.year}</p>
+                  <p className="movie-genre">{movie.genre}</p>
+                  <div className="movie-rating">
                     <Star size={16} fill="#ffd700" color="#ffd700" />
                     <span>{movie.rating}</span>
                   </div>
@@ -284,7 +285,7 @@ const MovieListApp = () => {
                     e.stopPropagation();
                     openEditModal(movie);
                   }}
-                  style={styles.editButton}
+                  className="edit-button"
                   title="Edit movie"
                 >
                   <EditIcon />
@@ -295,28 +296,23 @@ const MovieListApp = () => {
         </div>
 
         {/* Right Side - Drag and Drop Cards */}
-        <div style={styles.rightPanel}>
-          <h2 style={styles.panelTitle}>Ranking Control</h2>
-          <p style={styles.panelSubtitle}>Drag to reorder your movie rankings</p>
+        <div className="right-panel">
+          <h2 className="panel-title">Ranking Control</h2>
+          <p className="panel-subtitle">Drag to reorder your movie rankings</p>
           
-          <div ref={containerRef} style={styles.dragCardContainer}>
+          <div ref={containerRef} className="drag-card-container">
             {dragCards.map((card, index) => (
               <React.Fragment key={card.id}>
-                {draggedOverIndex === index && draggedCard && <div style={styles.dragOverIndicator} />}
+                {draggedOverIndex === index && draggedCard && <div className="drag-over-indicator" />}
                 
                 <div
-                  className={`drag-card-item${draggedCard && draggedCard.id === card.id ? ' dragging' : ''}`}
+                  className={`drag-card-item${draggedCard && draggedCard.id === card.id ? ' drag-card-item-dragging' : ''}`}
                   data-card-id={card.id}
-                  style={{
-                    ...styles.dragCardItem,
-                    ...(draggedCard && draggedCard.id === card.id ? styles.dragCardItemDragging : {})
-                  }}
                 >
-                  <div style={styles.dragCardLeft}>
+                  <div className="drag-card-left">
                     <div 
                       onMouseDown={(e) => handleMouseDown(e, card)} 
                       className="drag-icon-wrapper"
-                      style={styles.dragIconWrapper}
                     >
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                         <circle cx="4" cy="4" r="1" fill="#888"/>
@@ -327,88 +323,99 @@ const MovieListApp = () => {
                         <circle cx="12" cy="12" r="1" fill="#888"/>
                       </svg>
                     </div>
-                    <div style={styles.dragCardContent}>
-                      <h3 style={styles.dragCardTitle}>{card.title}</h3>
-                      <p style={styles.dragCardText}>{card.content}</p>
+                    <div className="drag-card-content">
+                      <h3 className="drag-card-title">{card.title}</h3>
+                      <p className="drag-card-text">{card.content}</p>
                     </div>
                   </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeMovie(card.id);
-                    }}
-                    className="drag-card-delete-button"
-                    style={styles.dragCardDeleteButton}
-                    title="Delete movie"
-                  >
-                    <DeleteIcon />
-                  </button>
+                  <div className="drag-card-buttons">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const movie = movies.find(m => m.id === card.id);
+                        if (movie) openEditModal(movie);
+                      }}
+                      className="drag-card-edit-button"
+                      title="Edit movie"
+                    >
+                      <EditIcon />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeMovie(card.id);
+                      }}
+                      className="drag-card-delete-button"
+                      title="Delete movie"
+                    >
+                      <DeleteIcon />
+                    </button>
+                  </div>
                 </div>
               </React.Fragment>
             ))}
             
-            {draggedOverIndex === dragCards.length && draggedCard && <div style={styles.dragOverIndicator} />}
+            {draggedOverIndex === dragCards.length && draggedCard && <div className="drag-over-indicator" />}
           </div>
         </div>
       </div>
 
       {/* Floating dragged card */}
       {isDragging && draggedCard && (
-        <div style={{
-          ...styles.floatingCard,
+        <div className="floating-card" style={{
           left: mousePosition.x - 150,
           top: mousePosition.y - 30
         }}>
-          <h3 style={styles.floatingCardTitle}>{draggedCard.title}</h3>
-          <p style={styles.floatingCardText}>{draggedCard.content}</p>
+          <h3 className="floating-card-title">{draggedCard.title}</h3>
+          <p className="floating-card-text">{draggedCard.content}</p>
         </div>
       )}
 
       {isModalOpen && (
-        <div style={styles.modalOverlay} onClick={() => setIsModalOpen(false)}>
-          <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <div style={styles.modalHeader}>
-              <h2 style={styles.modalTitle}>Add New Movie</h2>
+        <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">Add New Movie</h2>
               <button
                 onClick={() => setIsModalOpen(false)}
-                style={styles.modalCloseButton}
+                className="modal-close-button"
               >
                 <X size={24} />
               </button>
             </div>
-            <div style={styles.modalBody}>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Title *</label>
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="label">Title *</label>
                 <input
                   type="text"
                   value={newMovie.title}
                   onChange={(e) => setNewMovie({...newMovie, title: e.target.value})}
-                  style={styles.input}
+                  className="input"
                   placeholder="Enter movie title"
                 />
               </div>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Year *</label>
+              <div className="form-group">
+                <label className="label">Year *</label>
                 <input
                   type="number"
                   value={newMovie.year}
                   onChange={(e) => setNewMovie({...newMovie, year: e.target.value})}
-                  style={styles.input}
+                  className="input"
                   placeholder="Enter release year"
                 />
               </div>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Genre</label>
+              <div className="form-group">
+                <label className="label">Genre</label>
                 <input
                   type="text"
                   value={newMovie.genre}
                   onChange={(e) => setNewMovie({...newMovie, genre: e.target.value})}
-                  style={styles.input}
+                  className="input"
                   placeholder="Enter genre"
                 />
               </div>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Rating</label>
+              <div className="form-group">
+                <label className="label">Rating</label>
                 <input
                   type="number"
                   step="0.1"
@@ -416,40 +423,40 @@ const MovieListApp = () => {
                   max="10"
                   value={newMovie.rating}
                   onChange={(e) => setNewMovie({...newMovie, rating: e.target.value})}
-                  style={styles.input}
+                  className="input"
                   placeholder="Enter rating (0-10)"
                 />
               </div>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Poster URL</label>
+              <div className="form-group">
+                <label className="label">Poster URL</label>
                 <input
                   type="url"
                   value={newMovie.poster}
                   onChange={(e) => setNewMovie({...newMovie, poster: e.target.value})}
-                  style={styles.input}
+                  className="input"
                   placeholder="Enter poster image URL"
                 />
               </div>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Description</label>
+              <div className="form-group">
+                <label className="label">Description</label>
                 <textarea
                   value={newMovie.description}
                   onChange={(e) => setNewMovie({...newMovie, description: e.target.value})}
-                  style={{...styles.input, height: '80px', resize: 'vertical'}}
+                  className="input textarea"
                   placeholder="Enter movie description"
                 />
               </div>
             </div>
-            <div style={styles.modalFooter}>
+            <div className="modal-footer">
               <button
                 onClick={() => setIsModalOpen(false)}
-                style={styles.cancelButton}
+                className="cancel-button"
               >
                 Cancel
               </button>
               <button
                 onClick={addMovie}
-                style={styles.saveButton}
+                className="save-button"
                 disabled={!newMovie.title || !newMovie.year}
               >
                 Add Movie
@@ -460,42 +467,42 @@ const MovieListApp = () => {
       )}
 
       {isDetailModalOpen && selectedMovie && (
-        <div style={styles.modalOverlay} onClick={() => setIsDetailModalOpen(false)}>
-          <div style={styles.detailModal} onClick={(e) => e.stopPropagation()}>
-            <div style={styles.modalHeader}>
-              <h2 style={styles.modalTitle}>{selectedMovie.title}</h2>
+        <div className="modal-overlay" onClick={() => setIsDetailModalOpen(false)}>
+          <div className="detail-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">{selectedMovie.title}</h2>
               <button
                 onClick={() => setIsDetailModalOpen(false)}
-                style={styles.modalCloseButton}
+                className="modal-close-button"
               >
                 <X size={24} />
               </button>
             </div>
-            <div style={styles.detailModalBody}>
-              <div style={styles.detailContent}>
+            <div className="detail-modal-body">
+              <div className="detail-content">
                 <img
                   src={selectedMovie.poster}
                   alt={selectedMovie.title}
-                  style={styles.detailPoster}
+                  className="detail-poster"
                   onError={(e) => {
                     e.target.src = `https://via.placeholder.com/300x450/333/fff?text=${encodeURIComponent(selectedMovie.title)}`;
                   }}
                 />
-                <div style={styles.detailInfo}>
-                  <div style={styles.detailMetadata}>
-                    <p style={styles.detailYear}><strong>Year:</strong> {selectedMovie.year}</p>
-                    <p style={styles.detailGenre}><strong>Genre:</strong> {selectedMovie.genre}</p>
-                    <div style={styles.detailRating}>
+                <div className="detail-info">
+                  <div className="detail-metadata">
+                    <p className="detail-year"><strong>Year:</strong> {selectedMovie.year}</p>
+                    <p className="detail-genre"><strong>Genre:</strong> {selectedMovie.genre}</p>
+                    <div className="detail-rating">
                       <strong>Rating:</strong>
-                      <div style={styles.ratingContainer}>
+                      <div className="rating-container">
                         <Star size={20} fill="#ffd700" color="#ffd700" />
-                        <span style={styles.ratingText}>{selectedMovie.rating}/10</span>
+                        <span className="rating-text">{selectedMovie.rating}/10</span>
                       </div>
                     </div>
                   </div>
-                  <div style={styles.descriptionSection}>
-                    <h3 style={styles.descriptionTitle}>Description</h3>
-                    <p style={styles.descriptionText}>{selectedMovie.description}</p>
+                  <div className="description-section">
+                    <h3 className="description-title">Description</h3>
+                    <p className="description-text">{selectedMovie.description}</p>
                   </div>
                 </div>
               </div>
@@ -505,50 +512,50 @@ const MovieListApp = () => {
       )}
 
       {isEditModalOpen && editingMovie && (
-        <div style={styles.modalOverlay} onClick={() => setIsEditModalOpen(false)}>
-          <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <div style={styles.modalHeader}>
-              <h2 style={styles.modalTitle}>Edit Movie</h2>
+        <div className="modal-overlay" onClick={() => setIsEditModalOpen(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">Edit Movie</h2>
               <button
                 onClick={() => setIsEditModalOpen(false)}
-                style={styles.modalCloseButton}
+                className="modal-close-button"
               >
                 <X size={24} />
               </button>
             </div>
-            <div style={styles.modalBody}>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Title *</label>
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="label">Title *</label>
                 <input
                   type="text"
                   value={editMovie.title}
                   onChange={(e) => setEditMovie({...editMovie, title: e.target.value})}
-                  style={styles.input}
+                  className="input"
                   placeholder="Enter movie title"
                 />
               </div>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Year *</label>
+              <div className="form-group">
+                <label className="label">Year *</label>
                 <input
                   type="number"
                   value={editMovie.year}
                   onChange={(e) => setEditMovie({...editMovie, year: e.target.value})}
-                  style={styles.input}
+                  className="input"
                   placeholder="Enter release year"
                 />
               </div>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Genre</label>
+              <div className="form-group">
+                <label className="label">Genre</label>
                 <input
                   type="text"
                   value={editMovie.genre}
                   onChange={(e) => setEditMovie({...editMovie, genre: e.target.value})}
-                  style={styles.input}
+                  className="input"
                   placeholder="Enter genre"
                 />
               </div>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Rating</label>
+              <div className="form-group">
+                <label className="label">Rating</label>
                 <input
                   type="number"
                   step="0.1"
@@ -556,40 +563,40 @@ const MovieListApp = () => {
                   max="10"
                   value={editMovie.rating}
                   onChange={(e) => setEditMovie({...editMovie, rating: e.target.value})}
-                  style={styles.input}
+                  className="input"
                   placeholder="Enter rating (0-10)"
                 />
               </div>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Poster URL</label>
+              <div className="form-group">
+                <label className="label">Poster URL</label>
                 <input
                   type="url"
                   value={editMovie.poster}
                   onChange={(e) => setEditMovie({...editMovie, poster: e.target.value})}
-                  style={styles.input}
+                  className="input"
                   placeholder="Enter poster image URL"
                 />
               </div>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Description</label>
+              <div className="form-group">
+                <label className="label">Description</label>
                 <textarea
                   value={editMovie.description}
                   onChange={(e) => setEditMovie({...editMovie, description: e.target.value})}
-                  style={{...styles.input, height: '80px', resize: 'vertical'}}
+                  className="input textarea"
                   placeholder="Enter movie description"
                 />
               </div>
             </div>
-            <div style={styles.modalFooter}>
+            <div className="modal-footer">
               <button
                 onClick={() => setIsEditModalOpen(false)}
-                style={styles.cancelButton}
+                className="cancel-button"
               >
                 Cancel
               </button>
               <button
                 onClick={updateMovie}
-                style={styles.saveButton}
+                className="save-button"
                 disabled={!editMovie.title || !editMovie.year}
               >
                 Save Changes
@@ -601,519 +608,5 @@ const MovieListApp = () => {
     </div>
   );
 };
-
-const styles = {
-  container: {
-    minHeight: '100vh',
-    backgroundColor: '#0f0f0f',
-    color: '#ffffff',
-    fontFamily: 'Arial, sans-serif'
-  },
-  header: {
-    padding: '2rem',
-    borderBottom: '1px solid #333',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: '1rem'
-  },
-  title: {
-    fontSize: '2.5rem',
-    fontWeight: 'bold',
-    background: 'linear-gradient(45deg, #ff6b6b, #4ecdc4)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    margin: 0
-  },
-  headerControls: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1rem',
-    flexWrap: 'wrap'
-  },
-  searchContainer: {
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center'
-  },
-  searchIcon: {
-    position: 'absolute',
-    left: '12px',
-    color: '#888',
-    zIndex: 1
-  },
-  searchInput: {
-    padding: '12px 12px 12px 40px',
-    borderRadius: '8px',
-    border: '2px solid #333',
-    backgroundColor: '#1a1a1a',
-    color: '#fff',
-    fontSize: '16px',
-    width: '300px',
-    outline: 'none',
-    transition: 'border-color 0.2s'
-  },
-  addButton: {
-    padding: '12px 20px',
-    backgroundColor: '#4ecdc4',
-    color: '#000',
-    border: 'none',
-    borderRadius: '8px',
-    fontSize: '16px',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    transition: 'all 0.2s',
-    ':hover': {
-      backgroundColor: '#45b7b8',
-      transform: 'translateY(-2px)'
-    }
-  },
-  mainContent: {
-    display: 'flex',
-    minHeight: 'calc(100vh - 120px)',
-    gap: '2rem',
-    padding: '2rem'
-  },
-  leftPanel: {
-    flex: '1',
-    minWidth: '0'
-  },
-  rightPanel: {
-    width: '400px',
-    backgroundColor: '#1a1a1a',
-    borderRadius: '16px',
-    padding: '1.5rem',
-    border: '1px solid #333'
-  },
-  panelTitle: {
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
-    color: '#4ecdc4',
-    margin: '0 0 1rem 0'
-  },
-  panelSubtitle: {
-    fontSize: '0.9rem',
-    color: '#888',
-    margin: '0 0 1.5rem 0'
-  },
-  movieGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-    gap: '1.5rem',
-    marginTop: '1rem'
-  },
-  movieCard: {
-    position: 'relative',
-    backgroundColor: '#1a1a1a',
-    borderRadius: '12px',
-    overflow: 'hidden',
-    transition: 'transform 0.3s, box-shadow 0.3s',
-    cursor: 'pointer',
-    ':hover': {
-      transform: 'translateY(-8px)',
-      boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
-    }
-  },
-  movieRank: {
-    position: 'absolute',
-    top: '8px',
-    left: '8px',
-    backgroundColor: 'rgba(0,0,0,0.8)',
-    color: '#4ecdc4',
-    padding: '4px 8px',
-    borderRadius: '12px',
-    fontSize: '12px',
-    fontWeight: 'bold',
-    zIndex: 2
-  },
-  removeButton: {
-    position: 'absolute',
-    bottom: '8px',
-    right: '8px',
-    backgroundColor: 'rgba(255, 107, 107, 0.9)',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '6px',
-    width: '28px',
-    height: '28px',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 2,
-    transition: 'all 0.2s',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-  },
-  editButton: {
-    position: 'absolute',
-    bottom: '8px',
-    right: '44px',
-    backgroundColor: 'rgba(78, 205, 196, 0.9)',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '6px',
-    width: '28px',
-    height: '28px',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 2,
-    transition: 'all 0.2s',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-  },
-  moviePoster: {
-    width: '100%',
-    height: '300px',
-    objectFit: 'cover'
-  },
-  movieInfo: {
-    padding: '1rem'
-  },
-  movieTitle: {
-    fontSize: '1.1rem',
-    fontWeight: 'bold',
-    margin: 0,
-    lineHeight: '1.3'
-  },
-  movieYear: {
-    color: '#888',
-    margin: '0 0 0.25rem 0',
-    fontSize: '0.9rem'
-  },
-  movieGenre: {
-    color: '#4ecdc4',
-    margin: '0 0 0.5rem 0',
-    fontSize: '0.85rem'
-  },
-  movieRating: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '4px',
-    fontSize: '0.9rem'
-  },
-  dragDropSection: {
-    borderTop: '1px solid #333',
-    paddingTop: '2rem',
-    marginTop: '2rem'
-  },
-  dragCardContainer: {
-    position: 'relative'
-  },
-  dragCardItem: {
-    backgroundColor: '#0f0f0f',
-    border: '1px solid #333',
-    borderRadius: '8px',
-    padding: '12px',
-    marginBottom: '8px',
-    display: 'flex',
-    alignItems: 'center',
-    transition: 'all 0.2s ease',
-    cursor: 'default'
-  },
-  dragCardItemDragging: {
-    opacity: 0.3,
-    transform: 'scale(0.95)'
-  },
-  dragOverIndicator: {
-    height: '3px',
-    backgroundColor: '#4ecdc4',
-    margin: '4px 0',
-    borderRadius: '1px',
-    opacity: 0.8
-  },
-  dragCardLeft: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    flex: 1
-  },
-  dragIconWrapper: {
-    cursor: 'grab',
-    padding: '4px',
-    borderRadius: '4px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    transition: 'background-color 0.2s ease'
-  },
-  dragCardContent: {
-    flex: 1
-  },
-  dragCardTitle: {
-    margin: '0 0 4px 0',
-    fontSize: '14px',
-    color: '#ffffff',
-    fontWeight: 'bold'
-  },
-  dragCardText: {
-    margin: 0,
-    fontSize: '12px',
-    color: '#ccc'
-  },
-  dragCardDeleteButton: {
-    backgroundColor: 'rgba(255, 107, 107, 0.9)',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '4px',
-    width: '22px',
-    height: '22px',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    transition: 'all 0.2s',
-    marginLeft: '8px',
-    flexShrink: 0,
-    boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
-  },
-  floatingCard: {
-    position: 'fixed',
-    width: '300px',
-    backgroundColor: '#1a1a1a',
-    border: '2px solid #4ecdc4',
-    borderRadius: '8px',
-    padding: '12px',
-    boxShadow: '0 8px 16px rgba(0,0,0,0.4)',
-    pointerEvents: 'none',
-    zIndex: 1000,
-    opacity: 0.9,
-    color: '#ffffff'
-  },
-  floatingCardTitle: {
-    margin: '0 0 4px 0',
-    fontSize: '14px',
-    color: '#ffffff',
-    fontWeight: 'bold'
-  },
-  floatingCardText: {
-    margin: 0,
-    fontSize: '12px',
-    color: '#ccc'
-  },
-  modalOverlay: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 1000,
-    padding: '1rem'
-  },
-  modal: {
-    backgroundColor: '#1a1a1a',
-    borderRadius: '16px',
-    width: '100%',
-    maxWidth: '500px',
-    maxHeight: '90vh',
-    overflow: 'auto',
-    border: '1px solid #333'
-  },
-  modalHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '1.5rem',
-    borderBottom: '1px solid #333'
-  },
-  modalTitle: {
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
-    margin: 0,
-    color: '#4ecdc4'
-  },
-  modalCloseButton: {
-    backgroundColor: 'transparent',
-    border: 'none',
-    color: '#888',
-    cursor: 'pointer',
-    padding: '4px',
-    borderRadius: '4px',
-    transition: 'color 0.2s'
-  },
-  modalBody: {
-    padding: '1.5rem'
-  },
-  formGroup: {
-    marginBottom: '1.5rem'
-  },
-  label: {
-    display: 'block',
-    marginBottom: '0.5rem',
-    fontWeight: 'bold',
-    color: '#fff'
-  },
-  input: {
-    width: '100%',
-    padding: '12px',
-    borderRadius: '8px',
-    border: '2px solid #333',
-    backgroundColor: '#0f0f0f',
-    color: '#fff',
-    fontSize: '16px',
-    outline: 'none',
-    transition: 'border-color 0.2s',
-    boxSizing: 'border-box'
-  },
-  modalFooter: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    gap: '1rem',
-    padding: '1.5rem',
-    borderTop: '1px solid #333'
-  },
-  cancelButton: {
-    padding: '12px 24px',
-    backgroundColor: 'transparent',
-    color: '#888',
-    border: '2px solid #333',
-    borderRadius: '8px',
-    fontSize: '16px',
-    cursor: 'pointer',
-    transition: 'all 0.2s'
-  },
-  saveButton: {
-    padding: '12px 24px',
-    backgroundColor: '#4ecdc4',
-    color: '#000',
-    border: 'none',
-    borderRadius: '8px',
-    fontSize: '16px',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    transition: 'all 0.2s',
-    opacity: 1
-  },
-  detailModal: {
-    backgroundColor: '#1a1a1a',
-    borderRadius: '16px',
-    width: '100%',
-    maxWidth: '800px',
-    maxHeight: '90vh',
-    overflow: 'auto',
-    border: '1px solid #333'
-  },
-  detailModalBody: {
-    padding: '1.5rem'
-  },
-  detailContent: {
-    display: 'flex',
-    gap: '2rem',
-    flexWrap: 'wrap'
-  },
-  detailPoster: {
-    width: '300px',
-    height: '450px',
-    objectFit: 'cover',
-    borderRadius: '8px',
-    flexShrink: 0
-  },
-  detailInfo: {
-    flex: 1,
-    minWidth: '300px'
-  },
-  detailMetadata: {
-    marginBottom: '2rem'
-  },
-  detailYear: {
-    margin: '0 0 0.5rem 0',
-    fontSize: '1.1rem',
-    color: '#fff'
-  },
-  detailGenre: {
-    margin: '0 0 0.5rem 0',
-    fontSize: '1.1rem',
-    color: '#fff'
-  },
-  detailRating: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-    fontSize: '1.1rem',
-    color: '#fff'
-  },
-  ratingContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem'
-  },
-  ratingText: {
-    fontSize: '1.2rem',
-    fontWeight: 'bold'
-  },
-  descriptionSection: {
-    marginTop: '1rem'
-  },
-  descriptionTitle: {
-    fontSize: '1.3rem',
-    fontWeight: 'bold',
-    margin: '0 0 1rem 0',
-    color: '#4ecdc4'
-  },
-  descriptionText: {
-    fontSize: '1rem',
-    lineHeight: '1.6',
-    color: '#ccc',
-    margin: 0
-  }
-};
-
-// Add hover effects via CSS-in-JS workaround
-const styleSheet = document.createElement('style');
-styleSheet.textContent = `
-  .movie-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-  }
-  .add-button:hover {
-    background-color: #45b7b8 !important;
-    transform: translateY(-2px);
-  }
-  .search-input:focus {
-    border-color: #4ecdc4 !important;
-  }
-  .input:focus {
-    border-color: #4ecdc4 !important;
-  }
-  .modal-close-button:hover {
-    color: #fff !important;
-  }
-  .cancel-button:hover {
-    border-color: #888 !important;
-    color: #fff !important;
-  }
-  .save-button:hover {
-    background-color: #45b7b8 !important;
-  }
-  .save-button:disabled {
-    background-color: #333 !important;
-    color: #666 !important;
-    cursor: not-allowed !important;
-  }
-  .remove-button:hover {
-    background-color: rgba(255, 107, 107, 1) !important;
-    transform: scale(1.1);
-  }
-  .drag-card-delete-button:hover {
-    background-color: rgba(255, 107, 107, 1) !important;
-    transform: scale(1.2);
-  }
-  .drag-icon-wrapper:hover {
-    background-color: #333 !important;
-  }
-  .drag-card-item:hover {
-    border-color: #4ecdc4 !important;
-    background-color: #1a1a1a !important;
-  }
-`;
-document.head.appendChild(styleSheet);
 
 export default MovieListApp;
