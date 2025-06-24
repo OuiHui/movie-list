@@ -63,10 +63,16 @@ const MovieListApp = () => {
   };
 
   const handleSaveNewMovie = () => {
-    if (newMovie.title && newMovie.year) {
-      addMovie(newMovie);
-      setNewMovie({ title: '', year: '', genre: '', rating: '', poster: '', description: '' });
-      setIsModalOpen(false);
+    if (newMovie.title && newMovie.year && newMovie.poster) {
+      try {
+        addMovie(newMovie);
+        setNewMovie({ title: '', year: '', genre: '', rating: '', poster: '', description: '' });
+        setIsModalOpen(false);
+      } catch (error) {
+        alert(error.message);
+      }
+    } else {
+      alert('Please provide title, year, and poster URL');
     }
   };
 
@@ -90,19 +96,25 @@ const MovieListApp = () => {
   };
 
   const handleSaveEditMovie = () => {
-    if (editMovie.title && editMovie.year) {
-      updateMovie(editingMovie.id, editMovie);
-      setIsEditModalOpen(false);
-      setEditingMovie(null);
-      setEditMovie({
-        id: null,
-        title: '',
-        year: '',
-        genre: '',
-        rating: '',
-        poster: '',
-        description: ''
-      });
+    if (editMovie.title && editMovie.year && editMovie.poster) {
+      try {
+        updateMovie(editingMovie.id, editMovie);
+        setIsEditModalOpen(false);
+        setEditingMovie(null);
+        setEditMovie({
+          id: null,
+          title: '',
+          year: '',
+          genre: '',
+          rating: '',
+          poster: '',
+          description: ''
+        });
+      } catch (error) {
+        alert(error.message);
+      }
+    } else {
+      alert('Please provide title, year, and poster URL');
     }
   };
 

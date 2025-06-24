@@ -1,0 +1,38 @@
+import mongoose from "mongoose";
+
+const movieSchema = mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    year: {
+      type: Number,
+      required: true,
+    },
+    genre: {
+      type: String,
+      default: 'Unknown',
+    },
+    rating: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 10,
+    },
+    poster: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      default: 'No description available.',
+    }
+  }, {
+    timestamps: true
+  }
+);
+
+const Movie = mongoose.model("Movie", movieSchema);
+
+export default Movie;

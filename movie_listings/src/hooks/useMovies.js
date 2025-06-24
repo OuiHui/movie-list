@@ -74,26 +74,36 @@ export const useMovies = () => {
   }, [movies, searchTerm]);
 
   const addMovie = (movieData) => {
+    // Validate required fields including poster
+    if (!movieData.title || !movieData.year || !movieData.poster) {
+      throw new Error('Title, year, and poster are required fields');
+    }
+
     const movie = {
       id: Date.now(),
       title: movieData.title,
       year: parseInt(movieData.year),
       genre: movieData.genre || 'Unknown',
       rating: parseFloat(movieData.rating) || 0,
-      poster: movieData.poster || `https://via.placeholder.com/200x300/333/fff?text=${encodeURIComponent(movieData.title)}`,
+      poster: movieData.poster,
       description: movieData.description || 'No description available.'
     };
     setMovies([...movies, movie]);
   };
 
   const updateMovie = (id, movieData) => {
+    // Validate required fields including poster
+    if (!movieData.title || !movieData.year || !movieData.poster) {
+      throw new Error('Title, year, and poster are required fields');
+    }
+
     const updatedMovie = {
       id,
       title: movieData.title,
       year: parseInt(movieData.year),
       genre: movieData.genre || 'Unknown',
       rating: parseFloat(movieData.rating) || 0,
-      poster: movieData.poster || `https://via.placeholder.com/200x300/333/fff?text=${encodeURIComponent(movieData.title)}`,
+      poster: movieData.poster,
       description: movieData.description || 'No description available.'
     };
     setMovies(movies.map(movie => movie.id === id ? updatedMovie : movie));

@@ -58,13 +58,14 @@ const MovieModal = ({ isOpen, movie, onClose, onSave, onChange, title, isEdit = 
             />
           </div>
           <div className="form-group">
-            <label className="label">Poster URL</label>
+            <label className="label">Poster URL *</label>
             <input
               type="url"
               value={movie.poster}
               onChange={(e) => onChange({...movie, poster: e.target.value})}
               className="input"
               placeholder="Enter poster image URL"
+              required
             />
           </div>
           <div className="form-group">
@@ -84,7 +85,7 @@ const MovieModal = ({ isOpen, movie, onClose, onSave, onChange, title, isEdit = 
           <button
             onClick={onSave}
             className="save-button"
-            disabled={!movie.title || !movie.year}
+            disabled={!movie.title || !movie.year || !movie.poster}
           >
             {isEdit ? 'Save Changes' : 'Add Movie'}
           </button>
