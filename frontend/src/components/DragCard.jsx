@@ -1,5 +1,5 @@
 import React from 'react';
-import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import { Trash2, Edit } from 'lucide-react';
 
 const DragCard = ({ card, movies, onEdit, onDelete, onMouseDown, isDragging }) => {
   return (
@@ -36,7 +36,7 @@ const DragCard = ({ card, movies, onEdit, onDelete, onMouseDown, isDragging }) =
           className="drag-card-edit-button"
           title="Edit movie"
         >
-          <EditIcon boxSize="14px" />
+          <Edit size={14} />
         </button>
         <button
           onClick={(e) => {
@@ -46,7 +46,7 @@ const DragCard = ({ card, movies, onEdit, onDelete, onMouseDown, isDragging }) =
           className="drag-card-delete-button"
           title="Delete movie"
         >
-          <DeleteIcon boxSize="14px" />
+          <Trash2 size={14} />
         </button>
       </div>
     </div>

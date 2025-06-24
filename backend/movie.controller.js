@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 export const getMovie = async (req, res) => {
     try {
-        const movies = await Movie.find({});
+        const movies = await Movie.find({}).sort({ rank: 1, createdAt: 1 });
         res.status(200).json({ success: true, data: movies });
     } catch (error) {
         console.error("Error fetching movies:", error.message);
@@ -58,6 +58,30 @@ export const deleteMovie = async (req, res) => {
         res.status(200).json({ success: true, message: "Movie deleted" });
     } catch (error) {
         console.error("Error deleting movie:", error.message);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+}
+
+export const updateRankings = async (req, res) => {
+    const { rankings } = req.body; // Array of {id, rank} objects
+
+    if (!rankings || !Array.isArray(rankings)) {
+        return res.status(400).json({ success: false, message: "Please provide rankings array" });
+    }
+
+    try {
+        // Update each movie's rank
+        const updatePromises = rankings.map(({ id, rank }) => {
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                throw new Error(`Invalid movie ID: ${id}`);
+            }
+            return Movie.findByIdAndUpdate(id, { rank }, { new: true });
+        });
+
+        const updatedMovies = await Promise.all(updatePromises);
+        res.status(200).json({ success: true, data: updatedMovies });
+    } catch (error) {
+        console.error("Error updating rankings:", error.message);
         res.status(500).json({ success: false, message: "Server error" });
     }
 }

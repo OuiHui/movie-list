@@ -31,6 +31,10 @@ const movieSchema = mongoose.Schema(
     personalNote: {
       type: String,
       default: '',
+    },
+    rank: {
+      type: Number,
+      default: 0,
     }
   }, {
     timestamps: true

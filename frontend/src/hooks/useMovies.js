@@ -104,7 +104,8 @@ export const useMovies = () => {
           rating: parseFloat(movieData.rating) || 0,
           poster: movieData.poster,
           description: movieData.description || 'No description available.',
-          personalNote: movieData.personalNote || ''
+          personalNote: movieData.personalNote || '',
+          rank: movies.length + 1
         }),
       });
 
@@ -133,6 +134,10 @@ export const useMovies = () => {
 
     setLoading(true);
     setError(null);
+    
+    // Find current movie to preserve rank
+    const currentMovie = movies.find(m => m.id.toString() === id.toString());
+    const currentRank = currentMovie ? currentMovie.rank : 0;
 
     try {
       const response = await fetch(`${API_BASE_URL}/${id}`, {
@@ -147,7 +152,8 @@ export const useMovies = () => {
           rating: parseFloat(movieData.rating) || 0,
           poster: movieData.poster,
           description: movieData.description || 'No description available.',
-          personalNote: movieData.personalNote || ''
+          personalNote: movieData.personalNote || '',
+          rank: currentRank
         }),
       });
 
@@ -196,15 +202,64 @@ export const useMovies = () => {
     }
   };
 
-  const handleDragCardReorder = (reorderedCards) => {
+  const handleDragCardReorder = async (reorderedCards) => {
     setDragCards(reorderedCards);
     
     // Reorder movies to match the drag cards order
     const reorderedMovies = reorderedCards.map(card => 
-      movies.find(movie => movie.id === card.id)
+      movies.find(movie => movie.id.toString() === card.id.toString())
     ).filter(Boolean);
     
+    // Update local state immediately for responsive UI
     setMovies(reorderedMovies);
+    
+    // Persist rankings to database
+    try {
+      await updateRankings(reorderedMovies);
+    } catch (error) {
+      console.error('Failed to save rankings:', error);
+      // Could show a toast notification here
+    }
+  };
+
+  // Update rankings in database
+  const updateRankings = async (reorderedMovies) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const rankings = reorderedMovies.map((movie, index) => ({
+        id: movie.id,
+        rank: index + 1
+      }));
+
+      const response = await fetch(`${API_BASE_URL}/rankings`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ rankings }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        // Update local state with new rankings
+        const updatedMovies = reorderedMovies.map((movie, index) => ({
+          ...movie,
+          rank: index + 1
+        }));
+        setMovies(updatedMovies);
+      } else {
+        throw new Error(data.message || 'Failed to update rankings');
+      }
+    } catch (err) {
+      setError(err.message);
+      console.error('Error updating rankings:', err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
   };
 
   return {
@@ -219,6 +274,7 @@ export const useMovies = () => {
     updateMovie,
     removeMovie,
     handleDragCardReorder,
+    updateRankings,
     refetchMovies: fetchMovies
   };
 };

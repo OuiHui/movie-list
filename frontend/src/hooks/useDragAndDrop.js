@@ -12,6 +12,7 @@ export const useDragAndDrop = (dragCards, onReorder) => {
 
   const handleMouseDown = (e, card) => {
     e.preventDefault();
+    e.stopPropagation();
     setDraggedCard(card);
     draggedCardRef.current = card;
     setIsDragging(true);
@@ -23,14 +24,14 @@ export const useDragAndDrop = (dragCards, onReorder) => {
       const elements = document.elementsFromPoint(e.clientX, e.clientY);
       const cardElement = elements.find(el => 
         el.classList.contains('drag-card-item') && 
-        !el.classList.contains('dragging')
+        !el.classList.contains('drag-card-item-dragging')
       );
       
       if (cardElement) {
-        const cardId = parseInt(cardElement.dataset.cardId);
-        const cardIndex = dragCards.findIndex(c => c.id === cardId);
+        const cardId = cardElement.dataset.cardId;
+        const cardIndex = dragCards.findIndex(c => c.id.toString() === cardId);
         
-        if (cardIndex !== -1 && cardId !== card.id) {
+        if (cardIndex !== -1 && cardId !== card.id.toString()) {
           const rect = cardElement.getBoundingClientRect();
           const midpoint = rect.top + rect.height / 2;
           const dropIndex = e.clientY < midpoint ? cardIndex : cardIndex + 1;
@@ -53,7 +54,7 @@ export const useDragAndDrop = (dragCards, onReorder) => {
       const cardRef = draggedCardRef.current;
       
       if (overIndex !== null && cardRef) {
-        const currentIndex = dragCards.findIndex(c => c.id === cardRef.id);
+        const currentIndex = dragCards.findIndex(c => c.id.toString() === cardRef.id.toString());
         if (currentIndex !== -1 && overIndex !== currentIndex) {
           const updated = Array.from(dragCards);
           const [moved] = updated.splice(currentIndex, 1);
