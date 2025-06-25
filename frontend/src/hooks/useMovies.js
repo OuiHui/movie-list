@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'react-hot-toast';
 
 const API_BASE_URL = 'http://localhost:5000/api/movies';
 
@@ -216,9 +217,10 @@ export const useMovies = () => {
     // Persist rankings to database
     try {
       await updateRankings(reorderedMovies);
+      toast.success('Rankings saved!');
     } catch (error) {
       console.error('Failed to save rankings:', error);
-      // Could show a toast notification here
+      toast.error('Failed to save rankings to database');
     }
   };
 

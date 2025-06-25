@@ -36,7 +36,7 @@ const DragCard = ({ card, movies, onEdit, onDelete, onMouseDown, isDragging }) =
           className="drag-card-edit-button"
           title="Edit movie"
         >
-          <Edit size={14} />
+          <Edit size={14} strokeWidth={0.5} />
         </button>
         <button
           onClick={(e) => {
@@ -46,7 +46,7 @@ const DragCard = ({ card, movies, onEdit, onDelete, onMouseDown, isDragging }) =
           className="drag-card-delete-button"
           title="Delete movie"
         >
-          <Trash2 size={14} />
+          <Trash2 size={14} strokeWidth={0.5} />
         </button>
       </div>
     </div>

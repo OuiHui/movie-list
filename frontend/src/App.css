@@ -678,3 +678,60 @@
   border-radius: 0 8px 8px 0;
   font-style: italic;
 }
+
+/* Toast Confirmation Styles */
+.toast-confirm {
+  padding: 1rem;
+}
+
+.toast-message {
+  margin-bottom: 1rem;
+}
+
+.toast-message strong {
+  display: block;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: #ff6b6b;
+}
+
+.toast-message p {
+  margin: 0;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.toast-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.toast-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toast-button-cancel {
+  background: #333;
+  color: #ccc;
+}
+
+.toast-button-cancel:hover {
+  background: #444;
+  color: #fff;
+}
+
+.toast-button-confirm {
+  background: #ff6b6b;
+  color: #fff;
+}
+
+.toast-button-confirm:hover {
+  background: #ff5252;
+}

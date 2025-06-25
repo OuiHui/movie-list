@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Toaster, toast } from 'react-hot-toast';
 import Header from './components/Header';
 import MovieGrid from './components/MovieGrid';
 import DragDropPanel from './components/DragDropPanel';
@@ -73,11 +74,12 @@ const MovieListApp = () => {
         await addMovie(newMovie);
         setNewMovie({ title: '', year: '', genre: '', rating: '', poster: '', description: '', personalNote: '' });
         setIsModalOpen(false);
+        toast.success('Movie added successfully!');
       } catch (error) {
-        alert(`Error adding movie: ${error.message}`);
+        toast.error(`Error adding movie: ${error.message}`);
       }
     } else {
-      alert('Please provide title and poster URL');
+      toast.error('Please provide title and poster URL');
     }
   };
 
@@ -117,22 +119,55 @@ const MovieListApp = () => {
           description: '',
           personalNote: ''
         });
+        toast.success('Movie updated successfully!');
       } catch (error) {
-        alert(`Error updating movie: ${error.message}`);
+        toast.error(`Error updating movie: ${error.message}`);
       }
     } else {
-      alert('Please provide title and poster URL');
+      toast.error('Please provide title and poster URL');
     }
   };
 
   const handleDeleteMovie = async (id) => {
-    if (window.confirm('Are you sure you want to delete this movie?')) {
-      try {
-        await removeMovie(id);
-      } catch (error) {
-        alert(`Error deleting movie: ${error.message}`);
+    toast((t) => (
+      <div className="toast-confirm">
+        <div className="toast-message">
+          <strong>Delete Movie</strong>
+          <p>Are you sure you want to delete this movie?</p>
+        </div>
+        <div className="toast-buttons">
+          <button
+            className="toast-button toast-button-cancel"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Cancel
+          </button>
+          <button
+            className="toast-button toast-button-confirm"
+            onClick={async () => {
+              toast.dismiss(t.id);
+              try {
+                await removeMovie(id);
+                toast.success('Movie deleted successfully!');
+              } catch (error) {
+                toast.error(`Error deleting movie: ${error.message}`);
+              }
+            }}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    ), {
+      duration: Infinity,
+      style: {
+        background: '#1a1a1a',
+        color: '#fff',
+        border: '1px solid #333',
+        borderRadius: '8px',
+        padding: '0',
       }
-    }
+    });
   };
 
   return (
@@ -193,6 +228,30 @@ const MovieListApp = () => {
         onChange={setEditMovie}
         title="Edit Movie"
         isEdit={true}
+      />
+      
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: '#1a1a1a',
+            color: '#fff',
+            border: '1px solid #333',
+          },
+          success: {
+            iconTheme: {
+              primary: '#4ecdc4',
+              secondary: '#1a1a1a',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#ff6b6b',
+              secondary: '#1a1a1a',
+            },
+          },
+        }}
       />
     </div>
   );
