@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, Plus, Edit2, Trash2, Star } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 const ListSelector = ({ 
   lists, 
