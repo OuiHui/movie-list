@@ -35,6 +35,11 @@ const movieSchema = mongoose.Schema(
     rank: {
       type: Number,
       default: 0,
+    },
+    listId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'List',
+      required: true,
     }
   }, {
     timestamps: true

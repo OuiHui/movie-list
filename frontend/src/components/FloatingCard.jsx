@@ -1,5 +1,3 @@
-import React from 'react';
-
 const FloatingCard = ({ isVisible, card, mousePosition }) => {
   if (!isVisible || !card) return null;
 

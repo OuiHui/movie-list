@@ -7,10 +7,24 @@ import MovieModal from './components/MovieModal';
 import MovieDetailModal from './components/MovieDetailModal';
 import FloatingCard from './components/FloatingCard';
 import { useMovies } from './hooks/useMovies';
+import { useLists } from './hooks/useLists';
 import { useDragAndDrop } from './hooks/useDragAndDrop';
 import './App.css';
 
 const MovieListApp = () => {
+  // List management
+  const {
+    lists,
+    currentList,
+    loading: listsLoading,
+    createList,
+    updateList,
+    deleteList,
+    switchToList,
+    setDefaultList
+  } = useLists();
+
+  // Movie management for current list
   const {
     movies,
     dragCards,
@@ -24,7 +38,7 @@ const MovieListApp = () => {
     removeMovie,
     handleDragCardReorder,
     refetchMovies
-  } = useMovies();
+  } = useMovies(currentList?._id);
 
   const {
     draggedCard,
@@ -33,7 +47,9 @@ const MovieListApp = () => {
     isDragging,
     containerRef,
     handleMouseDown
-  } = useDragAndDrop(dragCards, handleDragCardReorder);
+  } = useDragAndDrop(dragCards, (reorderedCards) => 
+    handleDragCardReorder(reorderedCards, currentList?._id)
+  );
 
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -71,7 +87,7 @@ const MovieListApp = () => {
   const handleSaveNewMovie = async () => {
     if (newMovie.title && newMovie.poster) {
       try {
-        await addMovie(newMovie);
+        await addMovie(newMovie, currentList?._id);
         setNewMovie({ title: '', year: '', genre: '', rating: '', poster: '', description: '', personalNote: '' });
         setIsModalOpen(false);
         toast.success('Movie added successfully!');
@@ -176,6 +192,13 @@ const MovieListApp = () => {
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         onAddMovie={handleAddMovie}
+        lists={lists}
+        currentList={currentList}
+        onSelectList={switchToList}
+        onCreateList={createList}
+        onRenameList={updateList}
+        onDeleteList={deleteList}
+        onSetDefault={setDefaultList}
       />
 
       <div className="main-content">

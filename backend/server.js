@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './db.js';
 import movieRoutes from './movie.route.js';
+import listRoutes from './list.route.js';
 
 // Load environment variables
 dotenv.config();
@@ -24,6 +25,9 @@ app.get('/', (req, res) => {
 
 // Movie routes
 app.use('/api/movies', movieRoutes);
+
+// List routes
+app.use('/api/lists', listRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

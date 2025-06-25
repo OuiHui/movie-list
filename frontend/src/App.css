@@ -735,3 +735,541 @@
 .toast-button-confirm:hover {
   background: #ff5252;
 }
+
+/* List Selector Styles */
+.list-selector-container {
+  padding: 0 2rem;
+  border-bottom: 1px solid #333;
+}
+
+.list-selector {
+  position: relative;
+  display: inline-block;
+  min-width: 200px;
+}
+
+.list-selector-current {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+  border: 1px solid #444;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.list-selector-current:hover {
+  background: linear-gradient(135deg, #333, #222);
+  border-color: #555;
+}
+
+.list-name {
+  font-weight: 500;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.chevron {
+  transition: transform 0.2s ease;
+  color: #888;
+}
+
+.chevron.open {
+  transform: rotate(180deg);
+}
+
+.list-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  margin-top: 4px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.list-dropdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #333;
+  background: #222;
+  border-radius: 8px 8px 0 0;
+}
+
+.list-dropdown-header span {
+  font-size: 0.875rem;
+  color: #ccc;
+  font-weight: 500;
+}
+
+.create-list-btn {
+  background: #4ecdc4;
+  border: none;
+  border-radius: 4px;
+  padding: 0.25rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.create-list-btn:hover {
+  background: #45b8b0;
+}
+
+.create-list-form, .rename-form {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #333;
+}
+
+.list-input {
+  width: 100%;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 0.5rem;
+  color: #fff;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.list-input:focus {
+  outline: none;
+  border-color: #4ecdc4;
+  box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.2);
+}
+
+.form-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.save-btn, .cancel-btn {
+  padding: 0.375rem 0.75rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.save-btn {
+  background: #4ecdc4;
+  color: #000;
+}
+
+.save-btn:hover {
+  background: #45b8b0;
+}
+
+.cancel-btn {
+  background: #444;
+  color: #ccc;
+}
+
+.cancel-btn:hover {
+  background: #555;
+  color: #fff;
+}
+
+.list-options {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.list-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #333;
+  transition: background 0.2s ease;
+}
+
+.list-option:last-child {
+  border-bottom: none;
+}
+
+.list-option:hover {
+  background: #222;
+}
+
+.list-option-main {
+  flex: 1;
+  cursor: pointer;
+  padding-right: 0.5rem;
+}
+
+.list-option-main.active {
+  color: #4ecdc4;
+  font-weight: 500;
+}
+
+.list-option-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.default-star {
+  margin-left: 0.25rem;
+}
+
+.list-option-actions {
+  display: flex;
+  gap: 0.25rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.list-option:hover .list-option-actions {
+  opacity: 1;
+}
+
+.list-action-btn {
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.list-action-btn:hover {
+  background: #333;
+  color: #fff;
+}
+
+.set-default-btn:hover {
+  color: #ffd700;
+}
+
+.delete-btn:hover {
+  color: #ff6b6b;
+}
+
+/* Update header to accommodate list selector */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem 1rem 2rem;
+  border-bottom: none;
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Header list selector toggle bar */
+.header-list-selector {
+  margin-right: 1rem;
+}
+
+.list-toggle-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 0.25rem;
+  position: relative;
+}
+
+.toggle-bar-item {
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: #ccc;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: fit-content;
+}
+
+.toggle-bar-item:hover {
+  background: #333;
+  color: #fff;
+}
+
+.toggle-bar-item.active {
+  background: linear-gradient(135deg, #4ecdc4, #45b8b0);
+  color: #000;
+  font-weight: 500;
+}
+
+.toggle-bar-item.add-list-btn {
+  color: #4ecdc4;
+  border: 1px dashed #4ecdc4;
+  background: transparent;
+}
+
+.toggle-bar-item.add-list-btn:hover {
+  background: rgba(78, 205, 196, 0.1);
+  border-color: #45b8b0;
+}
+
+.toggle-default-star {
+  margin-left: 0.25rem;
+}
+
+.toggle-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.toggle-create-form {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  margin-top: 0.5rem;
+  min-width: 200px;
+}
+
+.toggle-create-form .list-input {
+  width: 100%;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 0.5rem;
+  color: #fff;
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+}
+
+.toggle-create-form .list-input:focus {
+  outline: none;
+  border-color: #4ecdc4;
+  box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.2);
+}
+
+.toggle-create-form .form-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.toggle-create-form .save-btn,
+.toggle-create-form .cancel-btn {
+  padding: 0.375rem 0.75rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.toggle-create-form .save-btn {
+  background: #4ecdc4;
+  color: #000;
+  font-weight: 500;
+}
+
+.toggle-create-form .save-btn:hover {
+  background: #45b8b0;
+}
+
+.toggle-create-form .cancel-btn {
+  background: #333;
+  color: #ccc;
+}
+
+.toggle-create-form .cancel-btn:hover {
+  background: #444;
+  color: #fff;
+}
+
+/* Toggle bar list item container */
+.toggle-bar-list-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.toggle-hover-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  margin-top: 0.5rem;
+  min-width: 120px;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+}
+
+.toggle-bar-list-item:hover .toggle-hover-menu {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Arrow pointer for hover menu */
+.toggle-hover-menu::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid #333;
+}
+
+.toggle-hover-menu::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid #1a1a1a;
+}
+
+.toggle-option-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  background: transparent;
+  border: none;
+  color: #ccc;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  text-align: left;
+}
+
+.toggle-option-item:hover {
+  background: #333;
+  color: #fff;
+}
+
+.toggle-option-item.delete-option {
+  color: #ff6b6b;
+}
+
+.toggle-option-item.delete-option:hover {
+  background: #ff6b6b;
+  color: #fff;
+}
+
+.toggle-rename-form {
+  display: inline-block;
+}
+
+.toggle-rename-input {
+  background: #2a2a2a;
+  border: 1px solid #4ecdc4;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  color: #fff;
+  font-size: 0.875rem;
+  min-width: 100px;
+  box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.2);
+}
+
+.toggle-rename-input:focus {
+  outline: none;
+  border-color: #45b8b0;
+}
+
+/* Subtitle for current list name */
+.subtitle {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #ccc;
+  margin: 0.25rem 0 0 0;
+}
+
+/* Empty state styles */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  text-align: center;
+  min-height: 200px;
+}
+
+.empty-state-message {
+  font-size: 1.1rem;
+  color: #888;
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+}
+
+.empty-state-hint {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Adjust movie grid to handle empty state */
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem 0;
+  min-height: 200px;
+}
+
+/* Ensure empty state spans full width in grid */
+.movie-grid .empty-state {
+  grid-column: 1 / -1;
+}

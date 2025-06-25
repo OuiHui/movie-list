@@ -3,7 +3,7 @@ import { toast } from 'react-hot-toast';
 
 const API_BASE_URL = 'http://localhost:5000/api/movies';
 
-export const useMovies = () => {
+export const useMovies = (currentListId) => {
   const [movies, setMovies] = useState([]);
   const [dragCards, setDragCards] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -11,17 +11,20 @@ export const useMovies = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fetch movies from database on component mount
+  // Fetch movies when currentListId changes
   useEffect(() => {
-    fetchMovies();
-  }, []);
+    if (currentListId) {
+      fetchMovies(currentListId);
+    }
+  }, [currentListId]);
 
   // Fetch movies from the backend
-  const fetchMovies = async () => {
+  const fetchMovies = async (listId) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(API_BASE_URL);
+      const url = listId ? `${API_BASE_URL}?listId=${listId}` : API_BASE_URL;
+      const response = await fetch(url);
       const data = await response.json();
       
       if (data.success) {
@@ -37,27 +40,8 @@ export const useMovies = () => {
     } catch (err) {
       setError(err.message);
       console.error('Error fetching movies:', err);
-      // Fallback to local data if API fails
-      setMovies([
-        { 
-          id: 1, 
-          title: "The Godfather", 
-          year: 1972, 
-          genre: "Crime", 
-          rating: 9.2, 
-          poster: "https://m.media-amazon.com/images/M/MV5BNGEwYjgwOGQtYjg5ZS00Njc1LTk2ZGEtM2QwZWQ2NjdhZTE5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg", 
-          description: "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son." 
-        },
-        { 
-          id: 2, 
-          title: "Pulp Fiction", 
-          year: 1994, 
-          genre: "Crime", 
-          rating: 8.9, 
-          poster: "https://upload.wikimedia.org/wikipedia/en/3/3b/Pulp_Fiction_%281994%29_poster.jpg", 
-          description: "The lives of two mob hitmen, a boxer, a gangster and his wife intertwine in four tales of violence and redemption." 
-        }
-      ]);
+      // Clear movies on error
+      setMovies([]);
     } finally {
       setLoading(false);
     }
@@ -83,7 +67,7 @@ export const useMovies = () => {
     setFilteredMovies(filtered);
   }, [movies, searchTerm]);
 
-  const addMovie = async (movieData) => {
+  const addMovie = async (movieData, listId) => {
     // Validate required fields including poster
     if (!movieData.title || !movieData.poster) {
       throw new Error('Title and poster are required fields');
@@ -106,7 +90,8 @@ export const useMovies = () => {
           poster: movieData.poster,
           description: movieData.description || 'No description available.',
           personalNote: movieData.personalNote || '',
-          rank: movies.length + 1
+          rank: movies.length + 1,
+          listId: listId
         }),
       });
 
@@ -203,7 +188,7 @@ export const useMovies = () => {
     }
   };
 
-  const handleDragCardReorder = async (reorderedCards) => {
+  const handleDragCardReorder = async (reorderedCards, listId) => {
     setDragCards(reorderedCards);
     
     // Reorder movies to match the drag cards order
@@ -216,7 +201,7 @@ export const useMovies = () => {
     
     // Persist rankings to database
     try {
-      await updateRankings(reorderedMovies);
+      await updateRankings(reorderedMovies, listId);
       toast.success('Rankings saved!');
     } catch (error) {
       console.error('Failed to save rankings:', error);
@@ -225,7 +210,7 @@ export const useMovies = () => {
   };
 
   // Update rankings in database
-  const updateRankings = async (reorderedMovies) => {
+  const updateRankings = async (reorderedMovies, listId) => {
     setLoading(true);
     setError(null);
 
@@ -240,7 +225,7 @@ export const useMovies = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ rankings }),
+        body: JSON.stringify({ rankings, listId }),
       });
 
       const data = await response.json();
@@ -277,6 +262,6 @@ export const useMovies = () => {
     removeMovie,
     handleDragCardReorder,
     updateRankings,
-    refetchMovies: fetchMovies
+    refetchMovies: () => fetchMovies(currentListId)
   };
 };

@@ -1,9 +1,26 @@
 import Movie from "./movie.model.js";
-import mongoose from "mongoose";   
+import List from "./list.model.js";
+import mongoose from "mongoose";
 
 export const getMovie = async (req, res) => {
     try {
-        const movies = await Movie.find({}).sort({ rank: 1, createdAt: 1 });
+        const { listId } = req.query;
+        
+        let query = {};
+        if (listId) {
+            if (!mongoose.Types.ObjectId.isValid(listId)) {
+                return res.status(400).json({ success: false, message: "Invalid list ID" });
+            }
+            query.listId = listId;
+        } else {
+            // Get default list if no listId specified
+            const defaultList = await List.findOne({ isDefault: true });
+            if (defaultList) {
+                query.listId = defaultList._id;
+            }
+        }
+
+        const movies = await Movie.find(query).sort({ rank: 1, createdAt: 1 });
         res.status(200).json({ success: true, data: movies });
     } catch (error) {
         console.error("Error fetching movies:", error.message);
@@ -16,6 +33,19 @@ export const createMovie = async (req, res) => {
 
     if (!movie.title || !movie.poster) {
         return res.status(400).json({ success:false, message:"Please provide title and poster"});
+    }
+
+    if (!movie.listId) {
+        // If no listId provided, use default list
+        const defaultList = await List.findOne({ isDefault: true });
+        if (!defaultList) {
+            return res.status(400).json({ success: false, message: "No default list found. Please create a list first." });
+        }
+        movie.listId = defaultList._id;
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(movie.listId)) {
+        return res.status(400).json({ success: false, message: "Invalid list ID" });
     }
 
     const newMovie = new Movie(movie);
@@ -63,10 +93,14 @@ export const deleteMovie = async (req, res) => {
 }
 
 export const updateRankings = async (req, res) => {
-    const { rankings } = req.body; // Array of {id, rank} objects
+    const { rankings, listId } = req.body; // Array of {id, rank} objects
 
     if (!rankings || !Array.isArray(rankings)) {
         return res.status(400).json({ success: false, message: "Please provide rankings array" });
+    }
+
+    if (listId && !mongoose.Types.ObjectId.isValid(listId)) {
+        return res.status(400).json({ success: false, message: "Invalid list ID" });
     }
 
     try {
@@ -75,7 +109,11 @@ export const updateRankings = async (req, res) => {
             if (!mongoose.Types.ObjectId.isValid(id)) {
                 throw new Error(`Invalid movie ID: ${id}`);
             }
-            return Movie.findByIdAndUpdate(id, { rank }, { new: true });
+            const updateData = { rank };
+            if (listId) {
+                updateData.listId = listId;
+            }
+            return Movie.findByIdAndUpdate(id, updateData, { new: true });
         });
 
         const updatedMovies = await Promise.all(updatePromises);
