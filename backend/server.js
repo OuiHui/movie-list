@@ -29,6 +29,15 @@ app.use('/api/movies', movieRoutes);
 // List routes
 app.use('/api/lists', listRoutes);
 
+// Health check endpoint for Docker
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ 
+        status: 'healthy', 
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime()
+    });
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
