@@ -3,9 +3,12 @@ import { Star } from 'lucide-react';
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 
 const MovieCard = ({ movie, index, onEdit, onDelete, onClick }) => {
+  // Use originalRank if available, otherwise fall back to index + 1
+  const displayRank = movie.originalRank || (index + 1);
+  
   return (
     <div className="movie-card" onClick={() => onClick(movie)}>
-      <div className="movie-rank">#{index + 1}</div>
+      <div className="movie-rank">#{displayRank}</div>
       <button
         onClick={(e) => {
           e.stopPropagation();

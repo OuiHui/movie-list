@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
 import Header from './components/Header';
 import MovieGrid from './components/MovieGrid';
 import DragDropPanel from './components/DragDropPanel';
 import MovieModal from './components/MovieModal';
 import MovieDetailModal from './components/MovieDetailModal';
+import MovieSearchModal from './components/MovieSearchModal';
 import FloatingCard from './components/FloatingCard';
 import { useMovies } from './hooks/useMovies';
 import { useLists } from './hooks/useLists';
@@ -55,8 +56,13 @@ const MovieListApp = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [editingMovie, setEditingMovie] = useState(null);
+  
+  // Sort state
+  const [sortBy, setSortBy] = useState('rank');
+  const [sortOrder, setSortOrder] = useState('desc'); // 'asc' or 'desc'
   
   // Form states
   const [newMovie, setNewMovie] = useState({
@@ -83,6 +89,74 @@ const MovieListApp = () => {
   const handleAddMovie = () => {
     setIsModalOpen(true);
   };
+
+  const handleSearchMovies = () => {
+    setIsSearchModalOpen(true);
+  };
+
+  const handleSelectMovieFromSearch = (movie) => {
+    // Pre-fill the add movie form with data from TMDb
+    setNewMovie({
+      title: movie.title,
+      year: movie.year?.toString() || '',
+      genre: movie.genre || '',
+      rating: movie.rating?.toString() || '',
+      poster: movie.poster || '',
+      description: movie.description || '',
+      personalNote: ''
+    });
+    setIsSearchModalOpen(false);
+    setIsModalOpen(true);
+  };
+
+  const handleSortChange = (newSortBy) => {
+    setSortBy(newSortBy);
+  };
+
+  const handleSortOrderToggle = () => {
+    setSortOrder(prevOrder => prevOrder === 'asc' ? 'desc' : 'asc');
+  };
+
+  // Sort movies based on selected criteria
+  const sortedMovies = useMemo(() => {
+    if (!filteredMovies || filteredMovies.length === 0) return filteredMovies;
+    
+    // Add original ranking to each movie before sorting
+    const moviesWithRank = filteredMovies.map((movie, index) => ({
+      ...movie,
+      originalRank: index + 1
+    }));
+    
+    let sorted = [...moviesWithRank];
+    
+    switch (sortBy) {
+      case 'title':
+        sorted = sorted.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case 'year':
+        sorted = sorted.sort((a, b) => (a.year || 0) - (b.year || 0));
+        break;
+      case 'genre':
+        sorted = sorted.sort((a, b) => (a.genre || '').localeCompare(b.genre || ''));
+        break;
+      case 'rating':
+        sorted = sorted.sort((a, b) => (a.rating || 0) - (b.rating || 0));
+        break;
+      case 'rank':
+      default:
+        // For rank, we don't need to sort as it's already in order
+        break;
+    }
+    
+    // Apply sort order (reverse if descending, except for rank which is naturally descending)
+    if (sortOrder === 'desc' && sortBy !== 'rank') {
+      sorted.reverse();
+    } else if (sortOrder === 'asc' && sortBy === 'rank') {
+      sorted.reverse();
+    }
+    
+    return sorted;
+  }, [filteredMovies, sortBy, sortOrder]);
 
   const handleSaveNewMovie = async () => {
     if (newMovie.title && newMovie.poster) {
@@ -192,6 +266,11 @@ const MovieListApp = () => {
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         onAddMovie={handleAddMovie}
+        onSearchMovies={handleSearchMovies}
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        onSortChange={handleSortChange}
+        onSortOrderToggle={handleSortOrderToggle}
         lists={lists}
         currentList={currentList}
         onSelectList={switchToList}
@@ -203,7 +282,7 @@ const MovieListApp = () => {
 
       <div className="main-content">
         <MovieGrid
-          movies={filteredMovies}
+          movies={sortedMovies}
           onEdit={handleEditMovie}
           onDelete={handleDeleteMovie}
           onMovieClick={handleMovieClick}
@@ -251,6 +330,12 @@ const MovieListApp = () => {
         onChange={setEditMovie}
         title="Edit Movie"
         isEdit={true}
+      />
+
+      <MovieSearchModal
+        isOpen={isSearchModalOpen}
+        onClose={() => setIsSearchModalOpen(false)}
+        onSelectMovie={handleSelectMovieFromSearch}
       />
       
       <Toaster
