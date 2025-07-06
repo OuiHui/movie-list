@@ -150,11 +150,6 @@ export const useLists = () => {
   };
 
   const switchToList = (list) => {
-    // Only show toast if switching to a different list
-    if (currentList && currentList._id === list._id) {
-      return; // Already on this list, don't show toast
-    }
-    
     setCurrentList(list);
     toast.success(`Switched to "${list.name}"`);
   };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Plus, Film, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { Search, Plus, Film } from 'lucide-react';
 import ListSelector from './ListSelector';
 
 const Header = ({ 
@@ -7,10 +7,6 @@ const Header = ({
   onSearchChange, 
   onAddMovie,
   onSearchMovies,
-  sortBy,
-  sortOrder,
-  onSortChange,
-  onSortOrderToggle,
   // List selector props
   lists,
   currentList,
@@ -48,26 +44,6 @@ const Header = ({
             onChange={(e) => onSearchChange(e.target.value)}
             className="search-input"
           />
-        </div>
-        <div className="sort-container">
-          <button 
-            className="sort-icon-button"
-            onClick={onSortOrderToggle}
-            title={`Sort ${sortOrder === 'asc' ? 'Descending' : 'Ascending'}`}
-          >
-            {sortOrder === 'asc' ? <ArrowUp size={20} /> : <ArrowDown size={20} />}
-          </button>
-          <select
-            value={sortBy}
-            onChange={(e) => onSortChange(e.target.value)}
-            className="sort-select"
-          >
-            <option value="rank">Rank</option>
-            <option value="title">Title</option>
-            <option value="year">Year</option>
-            <option value="genre">Genre</option>
-            <option value="rating">Rating</option>
-          </select>
         </div>
         <div className="header-buttons">
           <button 

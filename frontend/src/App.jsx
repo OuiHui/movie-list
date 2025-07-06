@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
 import Header from './components/Header';
 import MovieGrid from './components/MovieGrid';
@@ -60,10 +60,6 @@ const MovieListApp = () => {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [editingMovie, setEditingMovie] = useState(null);
   
-  // Sort state
-  const [sortBy, setSortBy] = useState('rank');
-  const [sortOrder, setSortOrder] = useState('desc'); // 'asc' or 'desc'
-  
   // Form states
   const [newMovie, setNewMovie] = useState({
     title: '',
@@ -108,55 +104,6 @@ const MovieListApp = () => {
     setIsSearchModalOpen(false);
     setIsModalOpen(true);
   };
-
-  const handleSortChange = (newSortBy) => {
-    setSortBy(newSortBy);
-  };
-
-  const handleSortOrderToggle = () => {
-    setSortOrder(prevOrder => prevOrder === 'asc' ? 'desc' : 'asc');
-  };
-
-  // Sort movies based on selected criteria
-  const sortedMovies = useMemo(() => {
-    if (!filteredMovies || filteredMovies.length === 0) return filteredMovies;
-    
-    // Add original ranking to each movie before sorting
-    const moviesWithRank = filteredMovies.map((movie, index) => ({
-      ...movie,
-      originalRank: index + 1
-    }));
-    
-    let sorted = [...moviesWithRank];
-    
-    switch (sortBy) {
-      case 'title':
-        sorted = sorted.sort((a, b) => a.title.localeCompare(b.title));
-        break;
-      case 'year':
-        sorted = sorted.sort((a, b) => (a.year || 0) - (b.year || 0));
-        break;
-      case 'genre':
-        sorted = sorted.sort((a, b) => (a.genre || '').localeCompare(b.genre || ''));
-        break;
-      case 'rating':
-        sorted = sorted.sort((a, b) => (a.rating || 0) - (b.rating || 0));
-        break;
-      case 'rank':
-      default:
-        // For rank, we don't need to sort as it's already in order
-        break;
-    }
-    
-    // Apply sort order (reverse if descending, except for rank which is naturally descending)
-    if (sortOrder === 'desc' && sortBy !== 'rank') {
-      sorted.reverse();
-    } else if (sortOrder === 'asc' && sortBy === 'rank') {
-      sorted.reverse();
-    }
-    
-    return sorted;
-  }, [filteredMovies, sortBy, sortOrder]);
 
   const handleSaveNewMovie = async () => {
     if (newMovie.title && newMovie.poster) {
@@ -267,10 +214,6 @@ const MovieListApp = () => {
         onSearchChange={setSearchTerm}
         onAddMovie={handleAddMovie}
         onSearchMovies={handleSearchMovies}
-        sortBy={sortBy}
-        sortOrder={sortOrder}
-        onSortChange={handleSortChange}
-        onSortOrderToggle={handleSortOrderToggle}
         lists={lists}
         currentList={currentList}
         onSelectList={switchToList}
@@ -282,7 +225,7 @@ const MovieListApp = () => {
 
       <div className="main-content">
         <MovieGrid
-          movies={sortedMovies}
+          movies={filteredMovies}
           onEdit={handleEditMovie}
           onDelete={handleDeleteMovie}
           onMovieClick={handleMovieClick}

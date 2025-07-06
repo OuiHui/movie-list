@@ -28,9 +28,7 @@ const MovieSearchModal = ({ isOpen, onClose, onSelectMovie }) => {
         setError(null);
         try {
           const results = await movieApi.searchMovies(searchTerm);
-          // Sort search results by rating (highest first)
-          const sortedResults = results.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-          setSearchResults(sortedResults);
+          setSearchResults(results);
           // Check if we're in demo mode (no API key)
           if (!import.meta.env.VITE_TMDB_API_KEY) {
             setIsDemo(true);
@@ -60,9 +58,7 @@ const MovieSearchModal = ({ isOpen, onClose, onSelectMovie }) => {
     setError(null);
     try {
       const movies = await movieApi.getPopularMovies();
-      // Sort popular movies by rating (highest first)
-      const sortedMovies = movies.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-      setPopularMovies(sortedMovies);
+      setPopularMovies(movies);
       // Check if we're in demo mode (no API key)
       if (!import.meta.env.VITE_TMDB_API_KEY) {
         setIsDemo(true);
