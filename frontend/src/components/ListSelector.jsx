@@ -113,7 +113,11 @@ const ListSelector = ({
                   onChange={(e) => setRenameValue(e.target.value)}
                   className="toggle-rename-input"
                   autoFocus
-                  onBlur={() => {
+                  onBlur={(e) => {
+                    // Save the name if it's not empty, otherwise cancel
+                    if (renameValue.trim()) {
+                      onRenameList(list._id, renameValue.trim());
+                    }
                     setShowRenameForm(null);
                     setRenameValue('');
                   }}
@@ -276,6 +280,14 @@ const ListSelector = ({
                       onChange={(e) => setRenameValue(e.target.value)}
                       className="list-input"
                       autoFocus
+                      onBlur={(e) => {
+                        // Save the name if it's not empty, otherwise cancel
+                        if (renameValue.trim()) {
+                          onRenameList(list._id, renameValue.trim());
+                        }
+                        setShowRenameForm(null);
+                        setRenameValue('');
+                      }}
                     />
                     <div className="form-buttons">
                       <button type="submit" className="save-btn">Save</button>
