@@ -2,8 +2,6 @@
 
 A full-stack movie list application with React frontend and Express/MongoDB backend.
 
-## Quick Start
-
 ### Method 1: Using npm scripts (Recommended)
 ```bash
 # From the movie list directory
@@ -16,15 +14,7 @@ npm run dev
 start-app.bat
 ```
 
-## Available Scripts
-
-- `npm run dev` - Run both frontend and backend in development mode
-- `npm run backend` - Run only backend server
-- `npm run frontend` - Run only frontend server  
-- `npm run install-deps` - Install dependencies for both frontend and backend
-- `npm run clean` - Clean node_modules from both projects
-
-## Servers
+## Running Locally
 
 - **Backend**: http://localhost:5000
 - **Frontend**: http://localhost:5173
