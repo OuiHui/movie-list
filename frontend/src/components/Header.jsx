@@ -23,7 +23,6 @@ const Header = ({
     <header className="header">
       <div className="header-left">
         <h1 className="title">Ranking Maker by Huy Nguyen</h1>
-        <h2 className="subtitle">{currentList?.name || 'Movie Collection'}</h2>
       </div>
       <div className="header-controls">
         <div className="header-list-selector">
