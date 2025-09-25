@@ -412,6 +412,20 @@
   z-index: 1000;
   opacity: 0.9;
   color: #ffffff;
+  transform: rotate(1deg);
+  transition: all 0.1s ease-out;
+  animation: floatingPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes floatingPulse {
+  0% {
+    box-shadow: 0 15px 35px rgba(78, 205, 196, 0.4);
+    transform: rotate(1deg) scale(1);
+  }
+  100% {
+    box-shadow: 0 20px 40px rgba(78, 205, 196, 0.6);
+    transform: rotate(-1deg) scale(1.02);
+  }
 }
 
 .floating-card-title {
