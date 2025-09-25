@@ -11,16 +11,13 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
+// Middleware - Permissive CORS for debugging
 app.use(cors({
-    origin: [
-        'http://localhost:5173',
-        'http://localhost:3000',
-        'https://ouihui.github.io'
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
+    origin: true, // Allow all origins for now
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With'],
+    credentials: true,
+    optionsSuccessStatus: 200
 }));
 app.use(express.json());
 
