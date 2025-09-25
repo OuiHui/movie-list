@@ -1,5 +1,5 @@
-import Movie from "./movie.model.js";
-import List from "./list.model.js";
+import Movie from "../model/movie.model.js";
+import List from "../model/list.model.js";
 import mongoose from "mongoose";
 
 export const getMovie = async (req, res) => {

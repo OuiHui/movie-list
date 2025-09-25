@@ -2,8 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './db.js';
-import movieRoutes from './movie.route.js';
-import listRoutes from './list.route.js';
+import movieRoutes from './route/movie.route.js';
+import listRoutes from './route/list.route.js';
 
 // Load environment variables
 dotenv.config();
