@@ -2,15 +2,16 @@ import React from 'react';
 import { Search, Plus, Film, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import ListSelector from './ListSelector';
 
-const Header = ({ 
-  searchTerm, 
-  onSearchChange, 
+const Header = ({
+  searchTerm,
+  onSearchChange,
   onAddMovie,
   onSearchMovies,
   sortBy,
   sortOrder,
   onSortChange,
   onSortOrderToggle,
+  // List selector props
   lists,
   currentList,
   onSelectList,
