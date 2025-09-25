@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api/lists' : 'http://localhost:5000/api/lists');
+const API_BASE_URL = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/lists` : 'http://localhost:5000/api/lists';
 
 export const useLists = () => {
   const [lists, setLists] = useState([]);
