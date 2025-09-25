@@ -1,0 +1,15 @@
+# Ignore all non-backend files
+../frontend/
+../.github/
+../README.md
+../DOCKER_README.md
+../docker-compose*.yml
+../package.json
+../package-lock.json
+../start-app.bat
+
+# Standard ignores
+node_modules/
+.env
+.env.*
+*.log
