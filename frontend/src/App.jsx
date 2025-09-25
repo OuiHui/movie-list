@@ -214,6 +214,10 @@ const MovieListApp = () => {
         onSearchChange={setSearchTerm}
         onAddMovie={handleAddMovie}
         onSearchMovies={handleSearchMovies}
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        onSortChange={handleSortChange}
+        onSortOrderToggle={handleSortOrderToggle}
         lists={lists}
         currentList={currentList}
         onSelectList={switchToList}
@@ -225,7 +229,7 @@ const MovieListApp = () => {
 
       <div className="main-content">
         <MovieGrid
-          movies={filteredMovies}
+          movies={sortedMovies}
           onEdit={handleEditMovie}
           onDelete={handleDeleteMovie}
           onMovieClick={handleMovieClick}
