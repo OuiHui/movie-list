@@ -92,10 +92,29 @@ app.use('/api/movies', ensureDBConnection, movieRoutes);
 // List routes (with DB connection check)
 app.use('/api/lists', ensureDBConnection, listRoutes);
 
-// Health check endpoint for Docker
+// Health check endpoint with database status
 app.get('/api/health', (req, res) => {
+    const dbState = mongoose.connection.readyState;
+    const stateNames = {
+        0: 'disconnected',
+        1: 'connected', 
+        2: 'connecting',
+        3: 'disconnecting'
+    };
+    
     res.status(200).json({ 
-        status: 'healthy', 
+        status: dbState === 1 ? 'healthy' : 'degraded',
+        database: {
+            state: stateNames[dbState] || 'unknown',
+            stateCode: dbState,
+            host: mongoose.connection.host || 'not connected',
+            name: mongoose.connection.name || 'not connected'
+        },
+        environment: {
+            hasMongoUri: !!process.env.MONGO_URI,
+            mongoUriPrefix: process.env.MONGO_URI ? process.env.MONGO_URI.substring(0, 25) + '...' : 'not set',
+            nodeEnv: process.env.NODE_ENV || 'development'
+        },
         timestamp: new Date().toISOString(),
         uptime: process.uptime()
     });
