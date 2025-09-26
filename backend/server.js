@@ -27,19 +27,52 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Connect to MongoDB
-connectDB();
+// Initialize MongoDB connection
+let dbConnection = null;
+const initDB = async () => {
+    if (!dbConnection) {
+        try {
+            dbConnection = await connectDB();
+            console.log('Database initialized for serverless');
+        } catch (error) {
+            console.error('Failed to initialize database:', error);
+            dbConnection = null;
+        }
+    }
+    return dbConnection;
+};
+
+// Middleware to ensure DB connection for API routes
+const ensureDBConnection = async (req, res, next) => {
+    try {
+        await initDB();
+        if (!dbConnection) {
+            return res.status(503).json({
+                success: false,
+                message: 'Database connection unavailable'
+            });
+        }
+        next();
+    } catch (error) {
+        console.error('Database connection error:', error);
+        res.status(503).json({
+            success: false,
+            message: 'Database connection failed',
+            error: error.message
+        });
+    }
+};
 
 // Routes
 app.get('/', (req, res) => {
     res.json({ message: 'Movie List API is running!' });
 });
 
-// Movie routes
-app.use('/api/movies', movieRoutes);
+// Movie routes (with DB connection check)
+app.use('/api/movies', ensureDBConnection, movieRoutes);
 
-// List routes
-app.use('/api/lists', listRoutes);
+// List routes (with DB connection check)
+app.use('/api/lists', ensureDBConnection, listRoutes);
 
 // Health check endpoint for Docker
 app.get('/api/health', (req, res) => {
