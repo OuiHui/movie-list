@@ -27,29 +27,46 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Initialize MongoDB connection
-let dbConnection = null;
+// MongoDB connection management for serverless
+import mongoose from 'mongoose';
+
 const initDB = async () => {
-    if (!dbConnection) {
-        try {
-            dbConnection = await connectDB();
-            console.log('Database initialized for serverless');
-        } catch (error) {
-            console.error('Failed to initialize database:', error);
-            dbConnection = null;
-        }
+    // Check if already connected
+    if (mongoose.connection.readyState === 1) {
+        console.log('Using existing database connection');
+        return mongoose.connection;
     }
-    return dbConnection;
+    
+    // Check if connecting
+    if (mongoose.connection.readyState === 2) {
+        console.log('Database connection in progress...');
+        // Wait for connection to complete
+        await new Promise((resolve) => {
+            mongoose.connection.once('connected', resolve);
+        });
+        return mongoose.connection;
+    }
+    
+    try {
+        console.log('Initializing new database connection...');
+        const conn = await connectDB();
+        console.log('Database initialized for serverless');
+        return conn;
+    } catch (error) {
+        console.error('Failed to initialize database:', error);
+        throw error;
+    }
 };
 
 // Middleware to ensure DB connection for API routes
 const ensureDBConnection = async (req, res, next) => {
     try {
         await initDB();
-        if (!dbConnection) {
+        if (mongoose.connection.readyState !== 1) {
             return res.status(503).json({
                 success: false,
-                message: 'Database connection unavailable'
+                message: 'Database connection unavailable',
+                connectionState: mongoose.connection.readyState
             });
         }
         next();
@@ -58,7 +75,8 @@ const ensureDBConnection = async (req, res, next) => {
         res.status(503).json({
             success: false,
             message: 'Database connection failed',
-            error: error.message
+            error: error.message,
+            connectionState: mongoose.connection.readyState
         });
     }
 };
