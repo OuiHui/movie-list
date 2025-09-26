@@ -120,6 +120,31 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+// Test endpoint to diagnose database connection issues
+app.get('/api/test-db', async (req, res) => {
+    try {
+        console.log('Testing database connection...');
+        await initDB();
+        
+        res.status(200).json({
+            success: true,
+            message: 'Database connection successful',
+            connectionState: mongoose.connection.readyState,
+            host: mongoose.connection.host,
+            dbName: mongoose.connection.name
+        });
+    } catch (error) {
+        console.error('Database test failed:', error);
+        res.status(503).json({
+            success: false,
+            message: 'Database connection failed',
+            error: error.message,
+            stack: error.stack,
+            connectionState: mongoose.connection.readyState
+        });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
