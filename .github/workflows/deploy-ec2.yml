@@ -30,8 +30,5 @@ jobs:
       
       - name: Deployment notification
         run: |
-          echo "✅ Docker image pushed successfully!"
-          echo "📝 Next steps:"
-          echo "1. SSH to your EC2 instance: ssh -i ~/.ssh/movie-list-ec2-key.pem ubuntu@${{ secrets.EC2_HOST }}"
-          echo "2. Run the auto-deploy script: ./auto-deploy.sh"
-          echo "3. Or set up a cron job to automatically pull and restart"
+          echo "Docker image pushed successfully!"
+

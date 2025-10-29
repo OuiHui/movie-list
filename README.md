@@ -19,6 +19,7 @@ movie list/
 ├── frontend/          # React frontend
 ├── nginx/             # NGINX reverse proxy configuration
 ├── .github/           # GitHub Actions CI/CD workflows
+├── .scripts/          # Auto-deploy script for EC2 instance
 └── package.json       # Root package.json with scripts
 ```
 ## Features
