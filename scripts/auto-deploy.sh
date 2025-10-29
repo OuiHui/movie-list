@@ -31,7 +31,7 @@ docker run -d \
     --name $CONTAINER_NAME \
     --restart unless-stopped \
     -p 5000:5000 \
-    -e MONGODB_URI="$MONGODB_URI" \
+    -e MONGO_URI="$MONGODB_URI" \
     -e PORT=5000 \
     $DOCKER_IMAGE
 

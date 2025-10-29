@@ -145,6 +145,19 @@ app.get('/api/test-db', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+// Initialize database connection on startup for Docker deployment
+const startServer = async () => {
+    try {
+        await initDB();
+        console.log('Database connected successfully at startup');
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+            console.log(`Database connection state: ${mongoose.connection.readyState}`);
+        });
+    } catch (error) {
+        console.error('Failed to start server:', error);
+        process.exit(1);
+    }
+};
+
+startServer();
