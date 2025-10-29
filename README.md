@@ -2,16 +2,12 @@
 
 A full-stack movie list application with React frontend and Express/MongoDB backend.
 
-### Method 1: Using npm scripts (Recommended)
+**Deployed with Docker, AWS EC2, NGINX reverse proxy, and GitHub Actions CI/CD pipeline.**
+
+### Using npm scripts
 ```bash
 # From the movie list directory
 npm run dev
-```
-
-### Method 2: Using batch file (Windows)
-```bash
-# Double-click start-app.bat or run from command line
-start-app.bat
 ```
 
 ## Running Locally
@@ -53,3 +49,17 @@ PORT=5000
 - Image poster requirements
 - MongoDB integration
 - Responsive design
+- **Dockerized backend deployment**
+- **AWS EC2 hosting with NGINX reverse proxy**
+- **Automated CI/CD pipeline with GitHub Actions**
+
+## Deployment
+
+### Production Deployment
+The backend is deployed on AWS EC2 with Docker and NGINX reverse proxy. Every push to the `main` branch triggers an automated deployment via GitHub Actions.
+
+- **Backend**: Deployed on AWS EC2
+- **Frontend**: Deployed on GitHub Pages
+- **CI/CD**: GitHub Actions
+- **Reverse Proxy**: NGINX
+
