@@ -1,0 +1,25 @@
+name: Test SSH Connection
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-ssh:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Test SSH connectivity to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "SSH connection successful!"
+            echo "Host: $(hostname)"
+            echo "User: $(whoami)"
+            echo "Date: $(date)"
+            echo "Docker status:"
+            docker --version || echo "Docker not found"
+            echo "System info:"
+            uname -a
