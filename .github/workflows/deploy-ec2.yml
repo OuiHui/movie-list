@@ -1,4 +1,4 @@
-name: Deploy Backend to AWS EC2
+name: Build and Push Backend to Docker Hub
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  build-and-push:
     runs-on: ubuntu-latest
     
     steps:
@@ -28,28 +28,10 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/movie-list-backend:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/movie-list-backend:latest
       
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            # Pull latest image
-            docker pull ${{ secrets.DOCKER_USERNAME }}/movie-list-backend:latest
-            
-            # Stop and remove old container
-            docker stop movie-list-backend || true
-            docker rm movie-list-backend || true
-            
-            # Run new container
-            docker run -d \
-              --name movie-list-backend \
-              --restart unless-stopped \
-              -p 5000:5000 \
-              -e MONGODB_URI="${{ secrets.MONGODB_URI }}" \
-              -e PORT=5000 \
-              ${{ secrets.DOCKER_USERNAME }}/movie-list-backend:latest
-            
-            # Clean up old images
-            docker image prune -af
+      - name: Deployment notification
+        run: |
+          echo "✅ Docker image pushed successfully!"
+          echo "📝 Next steps:"
+          echo "1. SSH to your EC2 instance: ssh -i ~/.ssh/movie-list-ec2-key.pem ubuntu@${{ secrets.EC2_HOST }}"
+          echo "2. Run the auto-deploy script: ./auto-deploy.sh"
+          echo "3. Or set up a cron job to automatically pull and restart"
