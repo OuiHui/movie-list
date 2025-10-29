@@ -5,31 +5,21 @@ Test it out: [https://ouihui.github.io/movie-list/](https://ouihui.github.io/mov
 
 **Deployed with Docker, AWS EC2, NGINX reverse proxy, and GitHub Actions CI/CD pipeline.**
 
-### Using npm scripts
+### Running locally
 ```bash
 # From the movie list directory
+npm install
 npm run dev
 ```
-
-## Running Locally
-
-- **Backend**: http://localhost:5000
-- **Frontend**: http://localhost:5173
-
-## Setup Instructions
-
-1. Make sure you have Node.js installed
-2. Install dependencies: `npm run install-deps`
-3. Set up your MongoDB connection in `backend/.env`
-4. Start the application: `npm run dev`
 
 ## Project Structure
 ```
 movie list/
 ├── backend/           # Express server and MongoDB
-├── movie_listings/    # React frontend
-├── package.json       # Root package.json with scripts
-└── start-app.bat     # Windows batch file to start app
+├── frontend/          # React frontend
+├── nginx/             # NGINX reverse proxy configuration
+├── .github/           # GitHub Actions CI/CD workflows
+└── package.json       # Root package.json with scripts
 ```
 ## Features
 
@@ -39,9 +29,9 @@ movie list/
 - Image poster requirements
 - MongoDB integration
 - Responsive design
-- **Dockerized backend deployment**
-- **AWS EC2 hosting with NGINX reverse proxy**
-- **Automated CI/CD pipeline with GitHub Actions**
+- Dockerized backend deployment
+- AWS EC2 hosting with NGINX reverse proxy
+- Automated CI/CD pipeline with GitHub Actions
 
 ## Deployment
 

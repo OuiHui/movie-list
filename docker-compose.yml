@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # MongoDB Database (same as production)
+  # MongoDB Database
   mongodb:
     image: mongo:7.0
     container_name: movie-app-mongodb-dev
@@ -18,7 +18,7 @@ services:
     networks:
       - movie-network
 
-  # Backend API (development mode with hot reload)
+  # Backend API
   backend:
     build:
       context: ./backend
@@ -39,7 +39,7 @@ services:
     networks:
       - movie-network
 
-  # Frontend Application (development mode with hot reload)
+  # Frontend Application
   frontend:
     build:
       context: ./frontend
