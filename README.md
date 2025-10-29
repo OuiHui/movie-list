@@ -1,6 +1,7 @@
 # Movie List Application
 
 A full-stack movie list application with React frontend and Express/MongoDB backend.
+Test it out: [https://ouihui.github.io/movie-list/](https://ouihui.github.io/movie-list/)
 
 **Deployed with Docker, AWS EC2, NGINX reverse proxy, and GitHub Actions CI/CD pipeline.**
 
@@ -23,7 +24,6 @@ npm run dev
 4. Start the application: `npm run dev`
 
 ## Project Structure
-
 ```
 movie list/
 ├── backend/           # Express server and MongoDB
@@ -31,16 +31,6 @@ movie list/
 ├── package.json       # Root package.json with scripts
 └── start-app.bat     # Windows batch file to start app
 ```
-
-## Environment Variables
-
-Create a `.env` file in the `backend/` directory:
-
-```
-MONGODB_URI=your_mongodb_connection_string
-PORT=5000
-```
-
 ## Features
 
 - Add, edit, and delete movies
