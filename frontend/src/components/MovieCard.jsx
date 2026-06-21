@@ -5,7 +5,7 @@ import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 const MovieCard = ({ movie, index, onEdit, onDelete, onClick }) => {
   return (
     <div className="movie-card" onClick={() => onClick(movie)}>
-      <div className="movie-rank">#{index + 1}</div>
+      <div className="movie-rank">#{movie.rank || index + 1}</div>
       <button
         onClick={(e) => {
           e.stopPropagation();

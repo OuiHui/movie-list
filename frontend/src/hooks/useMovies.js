@@ -51,7 +51,7 @@ export const useMovies = (currentListId) => {
   useEffect(() => {
     const cards = movies.map((movie, index) => ({
       id: movie.id,
-      title: `#${index + 1} - ${movie.title}`,
+      title: `#${movie.rank || index + 1} - ${movie.title}`,
       content: `${movie.year} • ${movie.genre} • ⭐${movie.rating}`
     }));
     setDragCards(cards);

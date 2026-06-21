@@ -121,13 +121,7 @@ const MovieListApp = () => {
   const sortedMovies = useMemo(() => {
     if (!filteredMovies || filteredMovies.length === 0) return filteredMovies;
     
-    // Add original ranking to each movie before sorting
-    const moviesWithRank = filteredMovies.map((movie, index) => ({
-      ...movie,
-      originalRank: index + 1
-    }));
-    
-    let sorted = [...moviesWithRank];
+    let sorted = [...filteredMovies];
     
     switch (sortBy) {
       case 'title':
@@ -144,7 +138,7 @@ const MovieListApp = () => {
         break;
       case 'rank':
       default:
-        // For rank, we don't need to sort as it's already in order
+        sorted = sorted.sort((a, b) => (a.rank || 0) - (b.rank || 0));
         break;
     }
     
