@@ -8,9 +8,9 @@
     "frontend": "cd frontend && npm run dev",
     "start": "concurrently \"npm run backend:start\" \"npm run frontend:build\"",
     "backend:start": "cd backend && npm start",
-    "frontend:build": "cd frontend && npm run build",
-    "install-deps": "cd backend && npm install && cd ../movie_listings && npm install",
-    "clean": "cd backend && rmdir /s /q node_modules 2>nul & cd ../movie_listings && rmdir /s /q node_modules 2>nul"
+    "frontend:build": "cd frontend && npm run build && npm run preview -- --open",
+    "install-deps": "cd backend && npm install && cd ../frontend && npm install",
+    "clean": "cd backend && rmdir /s /q node_modules 2>nul & cd ../frontend && rmdir /s /q node_modules 2>nul"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
